@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <!-- Book base -->
+    <path
+        android:fillColor="#6750A4"
+        android:pathData="M6,8C6,5.79 7.79,4 10,4H38C40.21,4 42,5.79 42,8V40C42,42.21 40.21,44 38,44H10C7.79,44 6,42.21 6,40V8Z" />
+    
+    <!-- Book pages -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M8,10C8,8.9 8.9,8 10,8H36V40H10C8.9,40 8,39.1 8,38V10Z" />
+    
+    <!-- Cricket bat -->
+    <path
+        android:fillColor="#795548"
+        android:pathData="M30,12l-8,16l4,2l8,-16z" />
+    
+    <!-- Cricket ball -->
+    <path
+        android:fillColor="#F44336"
+        android:pathData="M18,24m-6,0a6,6 0,1 1,12 0a6,6 0,1 1,-12 0" />
+    
+    <!-- Cricket ball stitches -->
+    <path
+        android:strokeWidth="1"
+        android:strokeColor="#FFFFFF"
+        android:pathData="M18,24m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0" />
+    <path
+        android:strokeWidth="1"
+        android:strokeColor="#FFFFFF"
+        android:pathData="M14,24H22" />
+    <path
+        android:strokeWidth="1"
+        android:strokeColor="#FFFFFF"
+        android:pathData="M18,20V28" />
+    
+    <!-- Page numbers -->
+    <path
+        android:fillColor="#6750A4"
+        android:pathData="M12,32h4v2h-4z" />
+    <path
+        android:fillColor="#6750A4"
+        android:pathData="M18,32h12v2h-12z" />
+</vector>

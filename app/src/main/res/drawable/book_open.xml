@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="240dp"
+    android:height="240dp"
+    android:viewportWidth="240"
+    android:viewportHeight="240">
+    
+    <!-- Left side of the book (pages) -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:pathData="M20,40C20,35.58 23.58,32 28,32H110V200H28C23.58,200 20,196.42 20,192V40Z" />
+    
+    <!-- Right side of the book (pages) -->
+    <path
+        android:fillColor="#EEEEEE"
+        android:pathData="M220,40C220,35.58 216.42,32 212,32H130V200H212C216.42,200 220,196.42 220,192V40Z" />
+    
+    <!-- Book spine shadow -->
+    <path
+        android:fillColor="#DDDDDD"
+        android:pathData="M110,32H130V200H110V32Z" />
+    
+    <!-- Left page content lines -->
+    <path
+        android:strokeWidth="1.5"
+        android:strokeColor="#BDBDBD"
+        android:pathData="M35,60H95" />
+    <path
+        android:strokeWidth="1.5"
+        android:strokeColor="#BDBDBD"
+        android:pathData="M35,80H95" />
+    <path
+        android:strokeWidth="1.5"
+        android:strokeColor="#BDBDBD"
+        android:pathData="M35,100H95" />
+    <path
+        android:strokeWidth="1.5"
+        android:strokeColor="#BDBDBD"
+        android:pathData="M35,120H95" />
+    <path
+        android:strokeWidth="1.5"
+        android:strokeColor="#BDBDBD"
+        android:pathData="M35,140H95" />
+    <path
+        android:strokeWidth="1.5"
+        android:strokeColor="#BDBDBD"
+        android:pathData="M35,160H95" />
+    
+    <!-- Right page content lines -->
+    <path
+        android:strokeWidth="1.5"
+        android:strokeColor="#BDBDBD"
+        android:pathData="M145,60H205" />
+    <path
+        android:strokeWidth="1.5"
+        android:strokeColor="#BDBDBD"
+        android:pathData="M145,80H205" />
+    <path
+        android:strokeWidth="1.5"
+        android:strokeColor="#BDBDBD"
+        android:pathData="M145,100H205" />
+    <path
+        android:strokeWidth="1.5"
+        android:strokeColor="#BDBDBD"
+        android:pathData="M145,120H205" />
+    <path
+        android:strokeWidth="1.5"
+        android:strokeColor="#BDBDBD"
+        android:pathData="M145,140H205" />
+    <path
+        android:strokeWidth="1.5"
+        android:strokeColor="#BDBDBD"
+        android:pathData="M145,160H205" />
+    
+    <!-- Page numbers -->
+    <path
+        android:fillColor="#616161"
+        android:pathData="M90,180L95,180A1,1 0,0 1,96 181L96,186A1,1 0,0 1,95 187L90,187A1,1 0,0 1,89 186L89,181A1,1 0,0 1,90 180z" />
+    <path
+        android:fillColor="#616161"
+        android:pathData="M144,180L149,180A1,1 0,0 1,150 181L150,186A1,1 0,0 1,149 187L144,187A1,1 0,0 1,143 186L143,181A1,1 0,0 1,144 180z" />
+</vector>

@@ -1,0 +1,79 @@
+<resources>
+    <string name="app_name">Book Cricket</string>
+    
+    <!-- General -->
+    <string name="play">Play</string>
+    <string name="continue_text">Continue</string>
+    <string name="back">Back</string>
+    
+    <!-- Home Screen -->
+    <string name="title_book_cricket">Book Cricket</string>
+    <string name="tagline_book_cricket">Classic paper book cricket game in digital form</string>
+    <string name="single_player">Single Player (vs. Computer)</string>
+    <string name="two_players">Two Players (vs. Friend)</string>
+    <string name="rules_how_to_play">Rules &amp; How to Play</string>
+    
+    <!-- Match Settings -->
+    <string name="match_settings">Match Settings</string>
+    <string name="configure_match">Configure Your Match</string>
+    <string name="team_1_name">Team 1 Name</string>
+    <string name="team_2_name">Team 2 Name</string>
+    <string name="number_of_overs">Number of Overs</string>
+    <string name="wickets_per_team">Wickets per Team</string>
+    <string name="start_match">Start Match</string>
+    
+    <!-- Toss Screen -->
+    <string name="toss_time">Toss Time!</string>
+    <string name="choose_heads_tails">%1$s, choose Heads or Tails</string>
+    <string name="heads">Heads</string>
+    <string name="tails">Tails</string>
+    <string name="tossing_coin">Tossing coin…</string>
+    <string name="won_the_toss">%1$s won the toss!</string>
+    <string name="choose_bat_bowl">Choose to bat or bowl first</string>
+    <string name="bat">Bat</string>
+    <string name="bowl">Bowl</string>
+    
+    <!-- Innings Screen -->
+    <string name="first_innings">First Innings</string>
+    <string name="second_innings">Second Innings</string>
+    <string name="batting">%1$s Batting</string>
+    <string name="score_format">%1$d/%2$d</string>
+    <string name="overs_format">Overs: %1$s</string>
+    <string name="target">Target: %1$d</string>
+    <string name="runs_needed">Need %1$d runs from %2$d balls</string>
+    <string name="out">OUT!</string>
+    <string name="flip_page">Flip Page</string>
+    
+    <!-- Innings Break Screen -->
+    <string name="end_of_first_innings">End of First Innings</string>
+    <string name="target_text">%1$s needs %2$d runs to win</string>
+    <string name="ready_second_innings">Ready for the second innings?</string>
+    <string name="continue_second_innings">Continue to Second Innings</string>
+    
+    <!-- Game Result Screen -->
+    <string name="match_result">MATCH RESULT</string>
+    <string name="won">%1$s Won!</string>
+    <string name="match_tied">Match Tied!</string>
+    <string name="won_by">by %1$s</string>
+    <string name="match_stats">Match Statistics</string>
+    <string name="first_innings_team">First Innings: %1$s</string>
+    <string name="second_innings_team">Second Innings: %1$s</string>
+    <string name="score_label">Score:</string>
+    <string name="overs_label">Overs:</string>
+    <string name="run_rate_label">Run Rate:</string>
+    <string name="play_again">Play Again</string>
+    <string name="back_to_home">Back to Home</string>
+    
+    <!-- Rules Screen -->
+    <string name="how_to_play">How to Play</string>
+    <string name="book_cricket_rules">Book Cricket Rules</string>
+    <string name="what_is_book_cricket">What is Book Cricket?</string>
+    <string name="what_is_book_cricket_desc">Book Cricket is a simple indoor game that can be played using any book with numbered pages. It simulates a cricket match by using page numbers to determine runs scored.</string>
+    <string name="game_setup">Game Setup</string>
+    <string name="game_setup_desc">1. Choose between single player (vs computer) or two players.\n2. Set team names, number of overs, and wickets per team.\n3. Perform a coin toss to determine which team bats first.</string>
+    <string name="how_to_play_title">How to Play</string>
+    <string name="how_to_play_desc">1. The batting player taps the \'Flip Page\' button which simulates opening a book to a random page.\n2. The last digit of the page number determines the runs:\n   - If it\'s 0: It\'s OUT! The batting team loses a wicket.\n   - If it\'s 1-9: The batting team scores that many runs.\n3. Players take turns batting until all overs are completed or all wickets are lost.</string>
+    <string name="winning">Winning</string>
+    <string name="winning_desc">The team that scores more runs wins the match. If both teams score the same number of runs, the match is tied.</string>
+    <string name="back_to_game">Back to Game</string>
+</resources>

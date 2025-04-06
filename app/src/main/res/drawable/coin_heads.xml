@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    
+    <!-- Coin base -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M60,60m-50,0a50,50 0,1 1,100 0a50,50 0,1 1,-100 0" />
+    
+    <!-- Coin edge highlight -->
+    <path
+        android:fillColor="#FFC107"
+        android:pathData="M60,60m-45,0a45,45 0,1 1,90 0a45,45 0,1 1,-90 0" />
+    
+    <!-- Coin shine -->
+    <path
+        android:fillColor="#FFECB3"
+        android:pathData="M40,35a35,25 0,1 0,70 0a35,25 0,1 0,-70 0z" />
+    
+    <!-- Heads text -->
+    <path
+        android:fillColor="#795548"
+        android:pathData="M38,65L38,55L42,55L42,57L40,57L40,59L42,59L42,61L40,61L40,65L38,65Z" />
+    
+    <path
+        android:fillColor="#795548"
+        android:pathData="M44,65L44,55L50,55C51.1,55 52,55.9 52,57L52,59C52,60.1 51.1,61 50,61L46,61L46,65L44,65ZM46,59L50,59L50,57L46,57L46,59Z" />
+    
+    <path
+        android:fillColor="#795548"
+        android:pathData="M54,65L54,55L60,55C61.1,55 62,55.9 62,57L62,59C62,59.75 61.57,60.39 60.95,60.72C61.57,61.04 62,61.69 62,62.43L62,65L60,65L60,63L56,63L56,65L54,65ZM56,61L60,61L60,59L56,59L56,61ZM56,57L60,57L56,57Z" />
+    
+    <path
+        android:fillColor="#795548"
+        android:pathData="M64,65L64,55L72,55L72,57L66,57L66,59L72,59L72,61L66,61L66,63L72,63L72,65L64,65Z" />
+    
+    <path
+        android:fillColor="#795548"
+        android:pathData="M74,55L74,57L76,57L76,63L74,63L74,65L80,65L80,63L78,63L78,57L80,57L80,55L74,55Z" />
+    
+    <path
+        android:fillColor="#795548"
+        android:pathData="M82,65L82,55L84,55L84,63L88,63L88,65L82,65Z" />
+</vector>
