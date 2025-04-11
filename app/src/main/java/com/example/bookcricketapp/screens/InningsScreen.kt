@@ -14,10 +14,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.bookcricketapp.viewmodels.GameMode
 import com.example.bookcricketapp.viewmodels.GameViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -32,9 +34,10 @@ fun InningsScreen(
     val battingTeam = if (isFirstInnings) gameViewModel.battingFirst else gameViewModel.bowlingFirst
     val bowlingTeam = if (isFirstInnings) gameViewModel.bowlingFirst else gameViewModel.battingFirst
 
-    val currentScore = if (isFirstInnings) gameViewModel.team1Score else gameViewModel.team2Score
-    val currentWickets = if (isFirstInnings) gameViewModel.team1Wickets else gameViewModel.team2Wickets
-    val currentBalls = if (isFirstInnings) gameViewModel.team1BallsPlayed else gameViewModel.team2BallsPlayed
+    // Get the correct scores based on which team is batting, not assuming team1 bats first
+    val currentScore = if (battingTeam == gameViewModel.team1Name) gameViewModel.team1Score else gameViewModel.team2Score
+    val currentWickets = if (battingTeam == gameViewModel.team1Name) gameViewModel.team1Wickets else gameViewModel.team2Wickets
+    val currentBalls = if (battingTeam == gameViewModel.team1Name) gameViewModel.team1BallsPlayed else gameViewModel.team2BallsPlayed
 
     var isAnimatingRun by remember { mutableStateOf(false) }
     var isWicketFalling by remember { mutableStateOf(false) }
@@ -42,7 +45,63 @@ fun InningsScreen(
     var flipMessage by remember { mutableStateOf("") }
     var currentRunAnimation by remember { mutableStateOf("") }
     var lastDigit by remember { mutableStateOf(0) }
-    val isInningsOver = gameViewModel.isInningsComplete(isFirstInnings)
+    
+    // Use a local state to track innings completion instead of checking on every recomposition
+    var isInningsCompleted by remember { mutableStateOf(false) }
+    
+    // Track when computer innings is complete but waiting for user to continue
+    var isComputerInningsComplete by remember { mutableStateOf(false) }
+
+    // Only check if innings is complete when something changes that could affect it
+    LaunchedEffect(key1 = currentScore, key2 = currentWickets, key3 = currentBalls) {
+        // Don't check for completion at the start of a new innings
+        // Only check after at least one ball has been played or if computer innings is complete
+        if ((currentBalls > 0 && !isFirstInnings) || (currentBalls > 0 && isFirstInnings) || isComputerInningsComplete) {
+            isInningsCompleted = gameViewModel.isInningsComplete(isFirstInnings)
+        }
+    }
+    
+    // Only have the computer bat if:
+    // 1. It's PVC mode AND
+    // 2. Either it's the first innings and computer is team2Name (batting first)
+    //    OR it's the second innings and computer is team2Name (batting second)
+    val isComputerBatting = gameViewModel.gameMode == GameMode.PVC && battingTeam == gameViewModel.team2Name
+
+    // Update to use the batting team for score tracking instead of assuming innings order
+    val finalScore = remember { derivedStateOf { 
+        if (battingTeam == gameViewModel.team1Name) gameViewModel.team1Score else gameViewModel.team2Score 
+    } }
+    val finalWickets = remember { derivedStateOf { 
+        if (battingTeam == gameViewModel.team1Name) gameViewModel.team1Wickets else gameViewModel.team2Wickets 
+    } }
+    val finalBalls = remember { derivedStateOf { 
+        if (battingTeam == gameViewModel.team1Name) gameViewModel.team1BallsPlayed else gameViewModel.team2BallsPlayed 
+    } }
+
+    LaunchedEffect(key1 = isComputerBatting) {
+        if (isComputerBatting && !isInningsCompleted) {
+            delay(1000)
+            gameViewModel.computerPlay()
+            delay(500)
+            
+            // Only after computer's innings, check if it was the first innings
+            // If so, we need to set this flag but not immediately navigate away
+            if (isFirstInnings) {
+                // Mark first innings as complete in the ViewModel
+                gameViewModel.isFirstInningsOver = true
+                // Show the completion card, but don't navigate away yet
+                isComputerInningsComplete = true
+            } else {
+                // If it's second innings, then we can navigate to results
+                isComputerInningsComplete = true
+            }
+        }
+    }
+
+    if (isComputerBatting && !isInningsCompleted && !isComputerInningsComplete) {
+        ComputerBattingLoadingScreen(battingTeam)
+        return
+    }
 
     fun handlePageFlip() {
         if (isAnimatingRun || isWicketFalling) {
@@ -84,12 +143,25 @@ fun InningsScreen(
         if (gameViewModel.isInningsComplete(isFirstInnings)) {
             if (isFirstInnings) {
                 gameViewModel.isFirstInningsOver = true
+                // For PVP mode, show the completion card instead of auto-navigating
+                if (gameViewModel.gameMode == GameMode.PVP) {
+                    isInningsCompleted = true
+                    return
+                }
             } else {
                 gameViewModel.checkGameOver()
+                // For PVP mode, show the completion card instead of auto-navigating
+                if (gameViewModel.gameMode == GameMode.PVP) {
+                    isInningsCompleted = true
+                    return
+                }
             }
-            scope.launch {
-                delay(2000)
-                onInningsComplete()
+            // Only auto-navigate in PVC mode when player is batting (not when computer is batting)
+            if (gameViewModel.gameMode != GameMode.PVP) {
+                scope.launch {
+                    delay(2000)
+                    onInningsComplete()
+                }
             }
         }
     }
@@ -317,9 +389,16 @@ fun InningsScreen(
                                 modifier = Modifier.weight(1f)
                             )
                         } else {
+                            // Determine target based on which team batted first
+                            val firstInningsScore = if (gameViewModel.battingFirst == gameViewModel.team1Name) {
+                                gameViewModel.team1Score
+                            } else {
+                                gameViewModel.team2Score
+                            }
+                            
                             StatCard(
                                 title = "TARGET",
-                                value = "${gameViewModel.team1Score + 1}",
+                                value = "${firstInningsScore + 1}",
                                 backgroundColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
                                 modifier = Modifier.weight(1f)
                             )
@@ -329,7 +408,14 @@ fun InningsScreen(
                     if (!isFirstInnings) {
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        val remainingRuns = gameViewModel.team1Score + 1 - currentScore
+                        // Determine first innings score based on batting order
+                        val firstInningsScore = if (gameViewModel.battingFirst == gameViewModel.team1Name) {
+                            gameViewModel.team1Score
+                        } else {
+                            gameViewModel.team2Score
+                        }
+                        
+                        val remainingRuns = firstInningsScore + 1 - currentScore
                         val remainingBalls = gameViewModel.totalOvers * 6 - currentBalls
 
                         Card(
@@ -500,20 +586,159 @@ fun InningsScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // Show innings completion UI and continue button for computer innings
+            AnimatedVisibility(
+                visible = isComputerInningsComplete,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Computer Innings Complete",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            textAlign = TextAlign.Center
+                        )
+                        
+                        Spacer(modifier = Modifier.height(8.dp))
+                        
+                        Text(
+                            text = "$battingTeam scored ${finalScore.value} for ${finalWickets.value} in ${finalBalls.value / 6}.${finalBalls.value % 6} overs",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            textAlign = TextAlign.Center
+                        )
+                        
+                        Spacer(modifier = Modifier.height(16.dp))
+                        
+                        Button(
+                            onClick = { 
+                                if (isComputerInningsComplete && isFirstInnings) {
+                                    // For computer's first innings, we need to reset the innings complete state
+                                    // before navigating to the second innings
+                                    isComputerInningsComplete = false
+                                    onInningsComplete()
+                                } else {
+                                    // For all other cases (player innings or computer's second innings)
+                                    onInningsComplete()
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            ),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text(
+                                text = "Continue",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                }
+            }
+            
+            // Show innings completion UI and continue button when player innings is over
+            AnimatedVisibility(
+                visible = isInningsCompleted && !isComputerInningsComplete,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Innings Complete",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            textAlign = TextAlign.Center
+                        )
+                        
+                        Spacer(modifier = Modifier.height(8.dp))
+                        
+                        Text(
+                            text = "$battingTeam scored $currentScore for $currentWickets in ${currentBalls/6}.${currentBalls%6} overs",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            textAlign = TextAlign.Center
+                        )
+                        
+                        Spacer(modifier = Modifier.height(16.dp))
+                        
+                        Button(
+                            onClick = { onInningsComplete() },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            ),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text(
+                                text = if (isFirstInnings) "Continue to Innings Break" else "See Results",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                }
+            }
+
             Button(
-                onClick = { if (!isInningsOver) handlePageFlip() },
+                onClick = { if (!isInningsCompleted) handlePageFlip() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(60.dp)
                     .padding(vertical = 4.dp),
-                enabled = !isInningsOver && (!gameViewModel.isComputerPlaying) &&
-                        (!isWicketFalling) && (!isAnimatingRun),
+                enabled = !isInningsCompleted && 
+                        (!gameViewModel.isComputerPlaying) &&
+                        (!isWicketFalling) && 
+                        (!isAnimatingRun) && 
+                        !isComputerInningsComplete &&
+                        // Check if we haven't reached the maximum overs
+                        currentBalls < (gameViewModel.totalOvers * 6) &&
+                        // Check if we haven't lost all wickets
+                        currentWickets < gameViewModel.totalWickets,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isInningsOver)
+                    containerColor = if (isInningsCompleted)
                         MaterialTheme.colorScheme.surfaceVariant
                     else
                         MaterialTheme.colorScheme.primary,
-                    contentColor = if (isInningsOver)
+                    contentColor = if (isInningsCompleted)
                         MaterialTheme.colorScheme.onSurfaceVariant
                     else
                         MaterialTheme.colorScheme.onPrimary,
@@ -528,13 +753,98 @@ fun InningsScreen(
                 )
             ) {
                 Text(
-                    text = if (isInningsOver) "Innings Complete" else "Flip Page",
+                    text = if (isInningsCompleted) "Innings Complete" else "Flip Page",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
             }
 
             Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
+}
+
+@Composable
+fun ComputerBattingLoadingScreen(teamName: String) {
+    val infiniteTransition = rememberInfiniteTransition(label = "loading_transition")
+    val scale by infiniteTransition.animateFloat(
+        initialValue = 0.8f,
+        targetValue = 1.2f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "pulse"
+    )
+
+    val rotation by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2000, easing = LinearEasing)
+        ),
+        label = "rotate"
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                        MaterialTheme.colorScheme.surface
+                    )
+                )
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "$teamName's Innings",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Box(
+                modifier = Modifier
+                    .size(100.dp)
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                        rotationZ = rotation
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(100.dp),
+                    color = MaterialTheme.colorScheme.primary,
+                    strokeWidth = 8.dp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Text(
+                text = "Computer is batting...",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Please wait",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+            )
         }
     }
 }

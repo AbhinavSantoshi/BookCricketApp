@@ -56,6 +56,25 @@ fun GameResultScreen(
         )
     }
     
+    // Get the correct team names based on batting order
+    val firstInningsTeamName = gameViewModel.battingFirst
+    val secondInningsTeamName = gameViewModel.bowlingFirst
+    
+    // Get the correct scores based on batting order
+    val firstInningsScore = if (firstInningsTeamName == gameViewModel.team1Name) 
+                            gameViewModel.team1Score else gameViewModel.team2Score
+    val firstInningsWickets = if (firstInningsTeamName == gameViewModel.team1Name) 
+                             gameViewModel.team1Wickets else gameViewModel.team2Wickets
+    val firstInningsBalls = if (firstInningsTeamName == gameViewModel.team1Name) 
+                           gameViewModel.team1BallsPlayed else gameViewModel.team2BallsPlayed
+    
+    val secondInningsScore = if (secondInningsTeamName == gameViewModel.team1Name) 
+                            gameViewModel.team1Score else gameViewModel.team2Score
+    val secondInningsWickets = if (secondInningsTeamName == gameViewModel.team1Name) 
+                              gameViewModel.team1Wickets else gameViewModel.team2Wickets
+    val secondInningsBalls = if (secondInningsTeamName == gameViewModel.team1Name) 
+                            gameViewModel.team1BallsPlayed else gameViewModel.team2BallsPlayed
+    
     // Trigger animations sequentially
     LaunchedEffect(Unit) {
         delay(300)
@@ -168,7 +187,7 @@ fun GameResultScreen(
                             .padding(20.dp)
                     ) {
                         Text(
-                            text = "First Innings: ${gameViewModel.team1Name}",
+                            text = "First Innings: $firstInningsTeamName",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary,
@@ -191,7 +210,7 @@ fun GameResultScreen(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                             )
                             Text(
-                                text = "${gameViewModel.team1Score}/${gameViewModel.team1Wickets}",
+                                text = "$firstInningsScore/$firstInningsWickets",
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -208,7 +227,7 @@ fun GameResultScreen(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                             )
                             Text(
-                                text = gameViewModel.getCurrentOver(gameViewModel.team1BallsPlayed),
+                                text = gameViewModel.getCurrentOver(firstInningsBalls),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
@@ -224,7 +243,7 @@ fun GameResultScreen(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                             )
                             Text(
-                                text = gameViewModel.getRunRate(gameViewModel.team1Score, gameViewModel.team1BallsPlayed),
+                                text = gameViewModel.getRunRate(firstInningsScore, firstInningsBalls),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
@@ -258,7 +277,7 @@ fun GameResultScreen(
                             .padding(20.dp)
                     ) {
                         Text(
-                            text = "Second Innings: ${gameViewModel.team2Name}",
+                            text = "Second Innings: $secondInningsTeamName",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary,
@@ -281,7 +300,7 @@ fun GameResultScreen(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                             )
                             Text(
-                                text = "${gameViewModel.team2Score}/${gameViewModel.team2Wickets}",
+                                text = "$secondInningsScore/$secondInningsWickets",
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -298,7 +317,7 @@ fun GameResultScreen(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                             )
                             Text(
-                                text = gameViewModel.getCurrentOver(gameViewModel.team2BallsPlayed),
+                                text = gameViewModel.getCurrentOver(secondInningsBalls),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
@@ -314,7 +333,7 @@ fun GameResultScreen(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                             )
                             Text(
-                                text = gameViewModel.getRunRate(gameViewModel.team2Score, gameViewModel.team2BallsPlayed),
+                                text = gameViewModel.getRunRate(secondInningsScore, secondInningsBalls),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }

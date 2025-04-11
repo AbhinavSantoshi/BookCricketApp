@@ -43,14 +43,47 @@ fun ResultsScreen(
     val team2Wickets = gameViewModel.team2Wickets
     val team2Overs = "${gameViewModel.team2BallsPlayed / 6}.${gameViewModel.team2BallsPlayed % 6}"
     
-    // Determine winner
-    val winningTeam = if (team1Score > team2Score) team1Name else team2Name
-    val margin = if (team1Score > team2Score) {
-        "${team1Score - team2Score} runs"
+    // Determine which team batted first and second
+    val firstInningsTeamName = gameViewModel.battingFirst
+    val secondInningsTeamName = gameViewModel.bowlingFirst
+    
+    // Set the correct scores based on batting order
+    val firstInningsScore: Int
+    val firstInningsWickets: Int
+    val firstInningsOvers: String
+    val secondInningsScore: Int
+    val secondInningsWickets: Int
+    val secondInningsOvers: String
+    
+    if (firstInningsTeamName == team1Name) {
+        // Team 1 batted first
+        firstInningsScore = team1Score
+        firstInningsWickets = team1Wickets
+        firstInningsOvers = team1Overs
+        secondInningsScore = team2Score
+        secondInningsWickets = team2Wickets
+        secondInningsOvers = team2Overs
     } else {
-        "${gameViewModel.wicketsPerTeam - team2Wickets} wickets"
+        // Team 2 batted first
+        firstInningsScore = team2Score
+        firstInningsWickets = team2Wickets
+        firstInningsOvers = team2Overs
+        secondInningsScore = team1Score
+        secondInningsWickets = team1Wickets
+        secondInningsOvers = team1Overs
     }
-    val isTie = team1Score == team2Score
+    
+    // Determine winner based on innings scores, not team numbers
+    val isTie = firstInningsScore == secondInningsScore
+    val firstInningsWon = firstInningsScore > secondInningsScore
+    val winningTeam = if (isTie) "" else if (firstInningsWon) firstInningsTeamName else secondInningsTeamName
+    val margin = if (isTie) {
+        "Tie"
+    } else if (firstInningsWon) {
+        "${firstInningsScore - secondInningsScore} runs"
+    } else {
+        "${gameViewModel.wicketsPerTeam - secondInningsWickets} wickets"
+    }
     
     // Background gradient
     val backgroundGradient = Brush.verticalGradient(
@@ -174,19 +207,19 @@ fun ResultsScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = team1Name,
+                                text = firstInningsTeamName,
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )
                             
                             Row(verticalAlignment = Alignment.Bottom) {
                                 Text(
-                                    text = "$team1Score",
+                                    text = "$firstInningsScore",
                                     fontSize = 24.sp,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = "/$team1Wickets",
+                                    text = "/$firstInningsWickets",
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Medium,
                                     modifier = Modifier.padding(bottom = 2.dp)
@@ -201,13 +234,13 @@ fun ResultsScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "Overs: $team1Overs",
+                                text = "Overs: $firstInningsOvers",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                             )
                             
                             Text(
-                                text = "RR: ${gameViewModel.getRunRate(team1Score, gameViewModel.team1BallsPlayed)}",
+                                text = "RR: ${gameViewModel.getRunRate(firstInningsScore, if (firstInningsTeamName == team1Name) gameViewModel.team1BallsPlayed else gameViewModel.team2BallsPlayed)}",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                             )
@@ -251,19 +284,19 @@ fun ResultsScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = team2Name,
+                                text = secondInningsTeamName,
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )
                             
                             Row(verticalAlignment = Alignment.Bottom) {
                                 Text(
-                                    text = "$team2Score",
+                                    text = "$secondInningsScore",
                                     fontSize = 24.sp,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = "/$team2Wickets",
+                                    text = "/$secondInningsWickets",
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Medium,
                                     modifier = Modifier.padding(bottom = 2.dp)
@@ -278,13 +311,13 @@ fun ResultsScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "Overs: $team2Overs",
+                                text = "Overs: $secondInningsOvers",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                             )
                             
                             Text(
-                                text = "RR: ${gameViewModel.getRunRate(team2Score, gameViewModel.team2BallsPlayed)}",
+                                text = "RR: ${gameViewModel.getRunRate(secondInningsScore, if (secondInningsTeamName == team1Name) gameViewModel.team1BallsPlayed else gameViewModel.team2BallsPlayed)}",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                             )
@@ -310,15 +343,16 @@ fun ResultsScreen(
                     ) {
                         Text(
                             text = if (isTie) {
-                                "The match ended in a tie with both teams scoring $team1Score runs in their allotted overs."
-                            } else if (team1Score > team2Score) {
-                                "$team1Name successfully defended their total, winning by $margin."
+                                "The match ended in a tie with both teams scoring $firstInningsScore runs in their allotted overs."
+                            } else if (gameViewModel.matchWinner == firstInningsTeamName) {
+                                "$firstInningsTeamName successfully defended their total, winning by $margin."
                             } else {
-                                val remainingBalls = gameViewModel.totalOvers * 6 - gameViewModel.team2BallsPlayed
+                                val remainingBalls = gameViewModel.totalOvers * 6 - 
+                                    (if (secondInningsTeamName == team1Name) gameViewModel.team1BallsPlayed else gameViewModel.team2BallsPlayed)
                                 if (remainingBalls > 0) {
-                                    "$team2Name chased down the target with $remainingBalls balls remaining."
+                                    "$secondInningsTeamName chased down the target with $remainingBalls balls remaining."
                                 } else {
-                                    "$team2Name chased down the target on the last ball!"
+                                    "$secondInningsTeamName chased down the target on the last ball!"
                                 }
                             },
                             style = MaterialTheme.typography.bodyLarge,

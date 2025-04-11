@@ -41,7 +41,7 @@ class GameViewModel : ViewModel() {
 
     // Game setup properties
     var gameMode by mutableStateOf(GameMode.PVC)
-    var team1Name by mutableStateOf("Player")
+    var team1Name by mutableStateOf("Player 1")
     var team2Name by mutableStateOf("Computer")
     var tossWinner by mutableStateOf("")
     var battingFirst by mutableStateOf("")
@@ -92,7 +92,7 @@ class GameViewModel : ViewModel() {
         gameMode = mode
         // Update team names based on selected game mode
         if (mode == GameMode.PVC) {
-            team1Name = "Player A"
+            team1Name = "Player 1"
             team2Name = "Computer"
         } else {
             team1Name = "Player 1"
@@ -148,8 +148,11 @@ class GameViewModel : ViewModel() {
         currentRun = runs
         currentRunType = runType
         
-        // Update the game state based on which innings is being played
-        if (isFirstInnings) {
+        // Update the game state based on which innings is being played AND which team is batting
+        val currentBattingTeam = if (isFirstInnings) battingFirst else bowlingFirst
+        
+        if (currentBattingTeam == team1Name) {
+            // Team 1 is batting
             if (runType == RunType.OUT) {
                 team1Wickets++
             } else if (runs > 0) {
@@ -157,6 +160,7 @@ class GameViewModel : ViewModel() {
             }
             team1BallsPlayed++
         } else {
+            // Team 2 is batting
             if (runType == RunType.OUT) {
                 team2Wickets++
             } else if (runs > 0) {
@@ -179,21 +183,127 @@ class GameViewModel : ViewModel() {
         }
         
         // For second innings, also check if the batting team has surpassed the target
-        if (!isFirstInnings && team2Score > team1Score) {
-            determineWinner()
-            return true
+        if (!isFirstInnings) {
+            // When it's second innings, the batting team is bowlingFirst
+            // and the team that batted first is battingFirst
+            val secondInningsScore = if (bowlingFirst == team1Name) team1Score else team2Score
+            val firstInningsScore = if (battingFirst == team1Name) team1Score else team2Score
+            
+            // If second innings team has surpassed first innings score, innings is complete
+            if (secondInningsScore > firstInningsScore && ballsPlayed > 0) {
+                return true
+            }
         }
         
         return false
     }
     
     fun computerPlay() {
-        // For computer player, simulate entire innings quickly
+        // For computer player, simulate entire innings using the same rules as human players
         val maxBalls = totalOvers * 6
+        val isFirstInnings = !isFirstInningsOver
         
-        while (team2BallsPlayed < maxBalls && team2Wickets < wicketsPerTeam && team2Score <= team1Score) {
-            playBall(false)
+        // Set computer as playing
+        isComputerPlaying = true
+        
+        // Determine which team is batting
+        val currentBattingTeam = if (isFirstInnings) battingFirst else bowlingFirst
+        
+        // Number of balls to play in this innings
+        val ballsPlayed = if (currentBattingTeam == team1Name) team1BallsPlayed else team2BallsPlayed
+        val wickets = if (currentBattingTeam == team1Name) team1Wickets else team2Wickets
+        val remainingBalls = maxBalls - ballsPlayed
+        
+        // Set up target variables for second innings
+        val isChasing = !isFirstInnings
+        val targetScore = if (isChasing) team1Score + 1 else 0
+
+        // Play each ball following the same rules as human players
+        for (i in 1..remainingBalls) {
+            // Exit if innings is over (all wickets lost)
+            if ((currentBattingTeam == team1Name && team1Wickets >= wicketsPerTeam) || 
+                (currentBattingTeam == team2Name && team2Wickets >= wicketsPerTeam)) {
+                break
+            }
+            
+            // In second innings, also exit if target is achieved
+            if (isChasing) {
+                if (currentBattingTeam == team1Name && team1Score >= targetScore) {
+                    break
+                } else if (currentBattingTeam == team2Name && team2Score >= targetScore) {
+                    break
+                }
+            }
+            
+            // Generate a random page number between 1 and 500
+            lastPageNumber = Random.nextInt(1, 500)
+            
+            // Get the last digit
+            val lastDigit = lastPageNumber % 10
+            
+            // Apply the same run type rules as human players
+            val runType = when(lastDigit) {
+                0 -> RunType.OUT           // Wicket falls
+                1, 2, 3 -> RunType.NORMAL_RUN  // Normal runs
+                4, 6 -> RunType.BOUNDARY    // Boundary runs
+                else -> RunType.NO_RUN      // No run (5, 7, 8, 9)
+            }
+            
+            // Calculate runs based on run type
+            val runs = when(runType) {
+                RunType.OUT -> 0
+                RunType.NORMAL_RUN -> lastDigit  // 1, 2, or 3 runs
+                RunType.BOUNDARY -> lastDigit    // 4 or 6 runs
+                RunType.NO_RUN -> 0              // No runs scored
+            }
+            
+            // Store the current run value and run type
+            currentRun = runs
+            currentRunType = runType
+            
+            // Update the game state based on which team is batting
+            if (currentBattingTeam == team1Name) {
+                // Team 1 is batting
+                if (runType == RunType.OUT) {
+                    team1Wickets++
+                } else if (runs > 0) {
+                    team1Score += runs
+                }
+                team1BallsPlayed++
+                
+                // Check if target reached in 2nd innings
+                if (isChasing && team1Score >= targetScore) {
+                    break
+                }
+            } else {
+                // Team 2 is batting
+                if (runType == RunType.OUT) {
+                    team2Wickets++
+                } else if (runs > 0) {
+                    team2Score += runs
+                }
+                team2BallsPlayed++
+                
+                // Check if target reached in 2nd innings
+                if (isChasing && team2Score >= targetScore) {
+                    break
+                }
+            }
         }
+        
+        // Update game state based on which innings just completed
+        if (isFirstInnings) {
+            // Just mark first innings as complete without checking game over
+            isFirstInningsOver = true
+        } else {
+            // Second innings is complete, now check if game is over
+            isGameOver = true
+            determineWinner()
+        }
+        
+        // Mark computer innings as complete
+        isComputerPlaying = false
+        isComputerInningsComplete = true
     }
     
     fun determineWinner() {
@@ -352,5 +462,33 @@ class GameViewModel : ViewModel() {
         
         // Default - just return a random page
         return basePageNumber
+    }
+
+    // Function to prepare the game for second innings
+    fun prepareSecondInnings() {
+        // Mark first innings as completed but reset any "innings complete" flags
+        isFirstInningsOver = true
+        isComputerInningsComplete = false
+        isComputerPlaying = false
+        
+        // Make sure we're using the right batting/bowling teams for second innings
+        currentBattingTeam = bowlingFirst
+        currentBowlingTeam = battingFirst
+        
+        // Reset any additional flags that might prevent batting in second innings
+        isGameOver = false
+        
+        // Always reset the stats for whichever team is batting in the second innings
+        if (bowlingFirst == team1Name) {
+            // Team 1 is batting in second innings
+            team1BallsPlayed = 0
+            team1Score = 0
+            team1Wickets = 0  // Also reset wickets
+        } else {
+            // Team 2 is batting in second innings (could be Player 2 in PVP mode or Computer in PVC mode)
+            team2BallsPlayed = 0
+            team2Score = 0
+            team2Wickets = 0  // Also reset wickets
+        }
     }
 }

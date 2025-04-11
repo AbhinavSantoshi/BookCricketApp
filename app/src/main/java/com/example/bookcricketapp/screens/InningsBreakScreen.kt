@@ -137,19 +137,38 @@ fun InningsBreakScreen(
                             
                             Spacer(modifier = Modifier.height(16.dp))
                             
+                            // Get the first innings score and wickets based on which team batted first
+                            val firstInningsScore = if (battingFirst == gameViewModel.team1Name) {
+                                gameViewModel.team1Score
+                            } else {
+                                gameViewModel.team2Score
+                            }
+                            
+                            val firstInningsWickets = if (battingFirst == gameViewModel.team1Name) {
+                                gameViewModel.team1Wickets
+                            } else {
+                                gameViewModel.team2Wickets
+                            }
+                            
+                            val firstInningsBallsPlayed = if (battingFirst == gameViewModel.team1Name) {
+                                gameViewModel.team1BallsPlayed
+                            } else {
+                                gameViewModel.team2BallsPlayed
+                            }
+                            
                             Row(
                                 verticalAlignment = Alignment.Bottom,
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 Text(
-                                    text = "${gameViewModel.team1Score}",
+                                    text = "$firstInningsScore",
                                     style = MaterialTheme.typography.displayMedium,
                                     fontWeight = FontWeight.ExtraBold,
                                     color = MaterialTheme.colorScheme.primary
                                 )
                                 
                                 Text(
-                                    text = "/${gameViewModel.team1Wickets}",
+                                    text = "/$firstInningsWickets",
                                     style = MaterialTheme.typography.headlineSmall,
                                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
                                     modifier = Modifier.padding(bottom = 8.dp)
@@ -159,7 +178,7 @@ fun InningsBreakScreen(
                             Spacer(modifier = Modifier.height(8.dp))
                             
                             Text(
-                                text = "Overs: ${gameViewModel.getCurrentOver(gameViewModel.team1BallsPlayed)}",
+                                text = "Overs: ${gameViewModel.getCurrentOver(firstInningsBallsPlayed)}",
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -203,7 +222,7 @@ fun InningsBreakScreen(
                                     .padding(horizontal = 24.dp, vertical = 12.dp)
                             ) {
                                 Text(
-                                    text = "$bowlingFirst needs ${gameViewModel.team1Score + 1} runs to win",
+                                    text = "$bowlingFirst needs ${firstInningsScore + 1} runs to win",
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Medium,
                                     color = MaterialTheme.colorScheme.onTertiaryContainer,
@@ -248,7 +267,11 @@ fun InningsBreakScreen(
                     )
                 ) {
                     Button(
-                        onClick = onNavigateToSecondInnings,
+                        onClick = {
+                            // Prepare the game state for second innings
+                            gameViewModel.prepareSecondInnings()
+                            onNavigateToSecondInnings()
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 32.dp)

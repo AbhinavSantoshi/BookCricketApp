@@ -57,6 +57,13 @@ fun MatchSettingsScreen(
     var wickets by remember { mutableStateOf(gameViewModel.totalWickets) }
     var gameMode by remember { mutableStateOf(GameMode.PVC) }
     
+    // Update team names whenever game mode changes
+    LaunchedEffect(gameMode) {
+        gameViewModel.updateGameMode(gameMode)
+        team1Name = gameViewModel.team1Name
+        team2Name = gameViewModel.team2Name
+    }
+    
     // Background gradient
     val backgroundGradient = Brush.verticalGradient(
         colors = listOf(

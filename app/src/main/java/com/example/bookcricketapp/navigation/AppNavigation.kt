@@ -14,6 +14,7 @@ sealed class Screen(val route: String) {
     object MatchSettings : Screen("match_settings")
     object Toss : Screen("toss")
     object FirstInnings : Screen("first_innings")
+    object InningsBreak : Screen("innings_break")
     object SecondInnings : Screen("second_innings")
     object Results : Screen("results")
 }
@@ -64,7 +65,22 @@ fun AppNavigation(
             InningsScreen(
                 gameViewModel = gameViewModel,
                 isFirstInnings = true,
-                onInningsComplete = { navController.navigate(Screen.SecondInnings.route) }
+                onInningsComplete = { 
+                    // Navigate to innings break screen between first and second innings
+                    navController.navigate(Screen.InningsBreak.route)
+                }
+            )
+        }
+        
+        // Innings Break Screen
+        composable(route = Screen.InningsBreak.route) {
+            InningsBreakScreen(
+                gameViewModel = gameViewModel,
+                onNavigateToSecondInnings = {
+                    navController.navigate(Screen.SecondInnings.route) {
+                        popUpTo(Screen.InningsBreak.route) { inclusive = true }
+                    }
+                }
             )
         }
         

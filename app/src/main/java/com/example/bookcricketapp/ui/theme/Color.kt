@@ -2,24 +2,24 @@ package com.example.bookcricketapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Vibrant cricket-themed colors
-val PitchGreen = Color(0xFF4CAF50)
-val BrightGreen = Color(0xFF66BB6A)
-val VibrantGreen = Color(0xFF00E676)
-val NightGreen = Color(0xFF7CDB6F)
+// Soothing yet vibrant cricket-themed colors
+val PitchGreen = Color(0xFF66BB6A)         // Softer green
+val BrightGreen = Color(0xFF81C784)        // More muted bright green
+val VibrantGreen = Color(0xFF4CAF50)       // Less intense vibrant green
+val NightGreen = Color(0xFFA5D6A7)         // Lighter, more soothing night green
 
-val WicketBrown = Color(0xFF8B5A2B)
-val DarkWood = Color(0xFFDB9370)
-val LightWood = Color(0xFFFFAB91)
+val WicketBrown = Color(0xFFBCAAA4)        // Softer brown
+val DarkWood = Color(0xFFA1887F)           // More muted wood color
+val LightWood = Color(0xFFD7CCC8)          // Softer light wood
 
-val ScoreboardBlue = Color(0xFF2196F3)
-val VibrantBlue = Color(0xFF29B6F6)
-val DeepBlue = Color(0xFF90CAF9)
+val ScoreboardBlue = Color(0xFF64B5F6)     // Softer blue
+val VibrantBlue = Color(0xFF42A5F5)        // Less intense vibrant blue
+val DeepBlue = Color(0xFF90CAF9)           // Lighter deep blue
 
-val CricketYellow = Color(0xFFFFEB3B)
-val CricketOrange = Color(0xFFFF9800)
-val CricketRed = Color(0xFFFF5252)
-val CricketPurple = Color(0xFFAA00FF)
+val CricketYellow = Color(0xFFFFF176)      // Softer yellow
+val CricketOrange = Color(0xFFFFB74D)      // Softer orange
+val CricketRed = Color(0xFFFF8A80)         // Softer red
+val CricketPurple = Color(0xFFB39DDB)      // Softer purple
 
 // Surface colors
 val LightSurface = Color(0xFFFFFBFF)

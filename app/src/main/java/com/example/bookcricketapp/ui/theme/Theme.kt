@@ -18,29 +18,29 @@ import androidx.core.view.WindowCompat
 import com.example.bookcricketapp.ui.theme.BookCricketTypography
 
 private val LightColorScheme = lightColorScheme(
-    primary = VibrantGreen,
+    primary = ScoreboardBlue,
     onPrimary = Color.White,
-    primaryContainer = BrightGreen,
-    onPrimaryContainer = Color(0xFF002200),
+    primaryContainer = DeepBlue,
+    onPrimaryContainer = Color(0xFF002039),
     
-    secondary = CricketOrange,
+    secondary = PitchGreen,
     onSecondary = Color.White,
-    secondaryContainer = LightWood,
-    onSecondaryContainer = Color(0xFF3F1500),
+    secondaryContainer = BrightGreen,
+    onSecondaryContainer = Color(0xFF002200),
     
-    tertiary = VibrantBlue,
+    tertiary = CricketOrange,
     onTertiary = Color.White,
-    tertiaryContainer = Color(0xFFD3E4FF),
-    onTertiaryContainer = Color(0xFF001934),
+    tertiaryContainer = LightWood,
+    onTertiaryContainer = Color(0xFF3F1500),
     
     error = CricketRed,
     errorContainer = Color(0xFFFFDAD6),
     onError = Color.White,
     onErrorContainer = Color(0xFF410002),
     
-    background = Color(0xFFFFFDF5),
+    background = LightBackground,
     onBackground = Color(0xFF1A1C19),
-    surface = Color.White,
+    surface = LightSurface,
     onSurface = Color(0xFF1A1C19),
     
     surfaceVariant = Color(0xFFE8F5E9),
@@ -49,29 +49,29 @@ private val LightColorScheme = lightColorScheme(
 )
 
 private val DarkColorScheme = darkColorScheme(
-    primary = VibrantGreen,
+    primary = ScoreboardBlue,
     onPrimary = Color.Black,
-    primaryContainer = Color(0xFF005313),
-    onPrimaryContainer = BrightGreen,
+    primaryContainer = Color(0xFF004A77),
+    onPrimaryContainer = DeepBlue,
     
-    secondary = CricketOrange,
+    secondary = PitchGreen,
     onSecondary = Color.Black,
-    secondaryContainer = Color(0xFF5D3F35),
-    onSecondaryContainer = LightWood,
+    secondaryContainer = Color(0xFF005313),
+    onSecondaryContainer = BrightGreen,
     
-    tertiary = VibrantBlue,
+    tertiary = CricketOrange,
     onTertiary = Color.Black,
-    tertiaryContainer = Color(0xFF004A77),
-    onTertiaryContainer = DeepBlue,
+    tertiaryContainer = Color(0xFF5D3F35),
+    onTertiaryContainer = LightWood,
     
     error = CricketRed,
     errorContainer = Color(0xFF93000A),
     onError = Color(0xFF690005),
     onErrorContainer = Color(0xFFFFDAD6),
     
-    background = Color(0xFF121212),
+    background = DarkBackground,
     onBackground = Color(0xFFE2E3DD),
-    surface = Color(0xFF1A1C19),
+    surface = DarkSurface,
     onSurface = Color(0xFFE2E3DD),
     
     surfaceVariant = Color(0xFF43483F),
