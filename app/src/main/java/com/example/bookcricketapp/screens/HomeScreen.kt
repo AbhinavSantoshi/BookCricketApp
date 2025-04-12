@@ -2,6 +2,7 @@ package com.example.bookcricketapp.screens
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -20,7 +21,9 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -87,14 +90,14 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .padding(top = 24.dp)
             ) {
-                // App logo using colored shape
+                // App logo using the custom image
                 Box(
                     modifier = Modifier
                         .size(160.dp)
                         .shadow(12.dp, CircleShape)
                         .clip(CircleShape)
                         .background(
-                            Brush.radialGradient(
+                            brush = Brush.radialGradient(
                                 colors = listOf(
                                     MaterialTheme.colorScheme.primary,
                                     MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
@@ -103,23 +106,14 @@ fun HomeScreen(
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    // Cricket bat shape using plain white
-                    Box(
+                    Image(
+                        painter = painterResource(id = R.drawable.book_cricket_app_icon),
+                        contentDescription = "Book Cricket App Logo",
                         modifier = Modifier
-                            .size(width = 30.dp, height = 80.dp)
-                            .offset(x = 10.dp)
-                            .rotate(30f)
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(Color.White.copy(alpha = 0.9f))
-                    )
-                    
-                    // Cricket ball shape using accent color
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .offset(x = (-20).dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.error.copy(alpha = 0.9f))
+                            .fillMaxSize()
+                            .padding(4.dp) // Add a small padding to create a border effect
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
                     )
                 }
                 
