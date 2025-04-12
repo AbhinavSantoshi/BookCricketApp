@@ -617,7 +617,7 @@ fun InningsScreen(
                         // Check if we haven't reached the maximum overs
                         currentBalls < (gameViewModel.totalOvers * 6) &&
                         // Check if we haven't lost all wickets
-                        currentWickets < gameViewModel.totalWickets,
+                        currentWickets < gameViewModel.wicketsPerTeam,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = if (isInningsCompleted)
                         MaterialTheme.colorScheme.surfaceVariant

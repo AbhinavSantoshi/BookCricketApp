@@ -81,10 +81,11 @@ class GameViewModel : ViewModel() {
     var computerBallDelay by mutableStateOf(1000L) // Milliseconds between computer plays
 
     fun updateMatchSettings(team1: String, team2: String, overs: Int, wickets: Int) {
-        team1Name = team1
-        team2Name = team2
+        team1Name = team1.trim()
+        team2Name = team2.trim()
         totalOvers = overs
         wicketsPerTeam = wickets
+        totalWickets = wickets // Keep both wicket properties in sync
     }
     
     // Renamed from setGameMode to updateGameMode to avoid JVM signature clash with the gameMode property setter
@@ -92,11 +93,11 @@ class GameViewModel : ViewModel() {
         gameMode = mode
         // Update team names based on selected game mode
         if (mode == GameMode.PVC) {
-            team1Name = "Player 1"
-            team2Name = "Computer"
+            team1Name = "Player A".trim()
+            team2Name = "Computer".trim()
         } else {
-            team1Name = "Player 1"
-            team2Name = "Player 2"
+            team1Name = "Player A".trim()
+            team2Name = "Player B".trim()
         }
     }
 
@@ -181,8 +182,13 @@ class GameViewModel : ViewModel() {
         val wickets = if (currentBattingTeam == team1Name) team1Wickets else team2Wickets
         val maxBalls = totalOvers * 6
         
-        // Check if all balls are played or all wickets are lost
-        if (ballsPlayed >= maxBalls || wickets >= wicketsPerTeam) {
+        // First, check for all wickets being lost - this should immediately end the innings
+        if (wickets >= wicketsPerTeam) {
+            return true
+        }
+        
+        // Check if all balls are played
+        if (ballsPlayed >= maxBalls) {
             return true
         }
         
@@ -398,6 +404,9 @@ class GameViewModel : ViewModel() {
         matchTied = false
         matchWinner = ""
         isFirstInningsOver = false
+        
+        // Don't reset totalOvers and wicketsPerTeam/totalWickets
+        // as these should be preserved between games
     }
     
     fun getCurrentOver(ballsPlayed: Int): String {

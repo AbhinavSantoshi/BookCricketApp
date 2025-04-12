@@ -80,10 +80,12 @@ fun MatchSettingsScreen(
     
     // Start game function
     fun startGame() {
-        gameViewModel.team1Name = team1Name
-        gameViewModel.team2Name = team2Name
+        // Set final values in ViewModel
+        gameViewModel.team1Name = team1Name.trim()
+        gameViewModel.team2Name = team2Name.trim()
         gameViewModel.totalOvers = overs
-        gameViewModel.totalWickets = wickets
+        gameViewModel.wicketsPerTeam = wickets  // Set wicketsPerTeam
+        gameViewModel.totalWickets = wickets    // Set totalWickets for compatibility
         gameViewModel.gameMode = gameMode
         onNavigateToToss()
     }
