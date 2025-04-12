@@ -85,15 +85,20 @@ fun InningsScreen(
             delay(500)
             
             // Only after computer's innings, check if it was the first innings
-            // If so, we need to set this flag but not immediately navigate away
             if (isFirstInnings) {
                 // Mark first innings as complete in the ViewModel
                 gameViewModel.isFirstInningsOver = true
-                // Show the completion card, but don't navigate away yet
                 isComputerInningsComplete = true
+                // Add delay then navigate to innings break
+                delay(1500)
+                onInningsComplete()
             } else {
-                // If it's second innings, then we can navigate to results
+                // If it's second innings, check game over then navigate to results
+                gameViewModel.checkGameOver()
                 isComputerInningsComplete = true
+                // Add delay then navigate to results
+                delay(1500)
+                onInningsComplete()
             }
         }
     }
@@ -115,10 +120,10 @@ fun InningsScreen(
 
         flipMessageVisible = true
         flipMessage = when (runType) {
-            GameViewModel.RunType.OUT -> "OUT! Wicket falls on page $pageNumber (Last digit: $lastDigit)"
-            GameViewModel.RunType.BOUNDARY -> "$runs Runs! Boundary scored on page $pageNumber (Last digit: $lastDigit)"
-            GameViewModel.RunType.NORMAL_RUN -> "$runs Runs scored on page $pageNumber (Last digit: $lastDigit)"
-            GameViewModel.RunType.NO_RUN -> "No Run on page $pageNumber (Last digit: $lastDigit)"
+            GameViewModel.RunType.OUT -> "OUT! Wicket falls on page $pageNumber"
+            GameViewModel.RunType.BOUNDARY -> "$runs Runs! Boundary scored on page $pageNumber"
+            GameViewModel.RunType.NORMAL_RUN -> "$runs Runs scored on page $pageNumber"
+            GameViewModel.RunType.NO_RUN -> "No run on page $pageNumber"
         }
 
         when (runType) {
@@ -140,26 +145,27 @@ fun InningsScreen(
             else -> { /* No special animation */ }
         }
 
-        if (gameViewModel.isInningsComplete(isFirstInnings)) {
+        // Check if innings is complete after this ball
+        val maxBalls = gameViewModel.totalOvers * 6
+        val currentBalls = if (battingTeam == gameViewModel.team1Name) gameViewModel.team1BallsPlayed else gameViewModel.team2BallsPlayed
+        val currentWickets = if (battingTeam == gameViewModel.team1Name) gameViewModel.team1Wickets else gameViewModel.team2Wickets
+
+        // Check if all balls played or all wickets lost (standard innings completion)
+        if (gameViewModel.isInningsComplete(isFirstInnings) || 
+            (isFirstInnings && (currentBalls >= maxBalls || currentWickets >= gameViewModel.wicketsPerTeam))) {
+            
             if (isFirstInnings) {
                 gameViewModel.isFirstInningsOver = true
-                // For PVP mode, show the completion card instead of auto-navigating
-                if (gameViewModel.gameMode == GameMode.PVP) {
-                    isInningsCompleted = true
-                    return
+                // Show ball result animation briefly, then navigate to innings break
+                scope.launch {
+                    delay(1500)
+                    onInningsComplete()
                 }
             } else {
+                // For second innings completion, set game over and navigate
                 gameViewModel.checkGameOver()
-                // For PVP mode, show the completion card instead of auto-navigating
-                if (gameViewModel.gameMode == GameMode.PVP) {
-                    isInningsCompleted = true
-                    return
-                }
-            }
-            // Only auto-navigate in PVC mode when player is batting (not when computer is batting)
-            if (gameViewModel.gameMode != GameMode.PVP) {
                 scope.launch {
-                    delay(2000)
+                    delay(1500)
                     onInningsComplete()
                 }
             }
@@ -497,6 +503,16 @@ fun InningsScreen(
                             flipMessage.contains("Boundary") -> MaterialTheme.colorScheme.onPrimaryContainer
                             else -> MaterialTheme.colorScheme.onSurfaceVariant
                         }
+                        
+                        // Extract run value from the flipMessage for display
+                        val runValue = when {
+                            flipMessage.contains("OUT") -> "W"
+                            flipMessage.contains("No run") -> "0"
+                            else -> {
+                                val words = flipMessage.split(" ")
+                                words.firstOrNull { it.toIntOrNull() != null } ?: "0"
+                            }
+                        }
 
                         Box(
                             modifier = Modifier
@@ -513,7 +529,7 @@ fun InningsScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = lastDigit.toString(),
+                                text = runValue,
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.ExtraBold,
                                 color = baseColor
@@ -585,138 +601,6 @@ fun InningsScreen(
             }
 
             Spacer(modifier = Modifier.height(12.dp))
-
-            // Show innings completion UI and continue button for computer innings
-            AnimatedVisibility(
-                visible = isComputerInningsComplete,
-                enter = fadeIn() + expandVertically(),
-                exit = fadeOut() + shrinkVertically()
-            ) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 12.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "Computer Innings Complete",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            textAlign = TextAlign.Center
-                        )
-                        
-                        Spacer(modifier = Modifier.height(8.dp))
-                        
-                        Text(
-                            text = "$battingTeam scored ${finalScore.value} for ${finalWickets.value} in ${finalBalls.value / 6}.${finalBalls.value % 6} overs",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            textAlign = TextAlign.Center
-                        )
-                        
-                        Spacer(modifier = Modifier.height(16.dp))
-                        
-                        Button(
-                            onClick = { 
-                                if (isComputerInningsComplete && isFirstInnings) {
-                                    // For computer's first innings, we need to reset the innings complete state
-                                    // before navigating to the second innings
-                                    isComputerInningsComplete = false
-                                    onInningsComplete()
-                                } else {
-                                    // For all other cases (player innings or computer's second innings)
-                                    onInningsComplete()
-                                }
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(48.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                contentColor = MaterialTheme.colorScheme.onPrimary
-                            ),
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                            Text(
-                                text = "Continue",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-                }
-            }
-            
-            // Show innings completion UI and continue button when player innings is over
-            AnimatedVisibility(
-                visible = isInningsCompleted && !isComputerInningsComplete,
-                enter = fadeIn() + expandVertically(),
-                exit = fadeOut() + shrinkVertically()
-            ) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 12.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "Innings Complete",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                            textAlign = TextAlign.Center
-                        )
-                        
-                        Spacer(modifier = Modifier.height(8.dp))
-                        
-                        Text(
-                            text = "$battingTeam scored $currentScore for $currentWickets in ${currentBalls/6}.${currentBalls%6} overs",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                            textAlign = TextAlign.Center
-                        )
-                        
-                        Spacer(modifier = Modifier.height(16.dp))
-                        
-                        Button(
-                            onClick = { onInningsComplete() },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(48.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                contentColor = MaterialTheme.colorScheme.onPrimary
-                            ),
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                            Text(
-                                text = if (isFirstInnings) "Continue to Innings Break" else "See Results",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-                }
-            }
 
             Button(
                 onClick = { if (!isInningsCompleted) handlePageFlip() },

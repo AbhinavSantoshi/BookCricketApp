@@ -104,10 +104,14 @@ fun AppNavigation(
                     }
                 },
                 onHomeClick = {
-                    gameViewModel.resetGame()
+                    // Navigate first, then reset game state to prevent 
+                    // ResultsScreen from seeing the reset state (which briefly shows as a tie)
                     navController.navigate(Screen.Home.route) {
                         popUpTo(Screen.Home.route) { inclusive = true }
+                        launchSingleTop = true
                     }
+                    // Only reset after navigation has been dispatched
+                    gameViewModel.resetGame()
                 }
             )
         }

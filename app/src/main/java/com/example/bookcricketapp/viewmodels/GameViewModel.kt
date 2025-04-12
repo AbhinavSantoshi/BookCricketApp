@@ -189,9 +189,25 @@ class GameViewModel : ViewModel() {
             val secondInningsScore = if (bowlingFirst == team1Name) team1Score else team2Score
             val firstInningsScore = if (battingFirst == team1Name) team1Score else team2Score
             
-            // If second innings team has surpassed first innings score, innings is complete
-            if (secondInningsScore > firstInningsScore && ballsPlayed > 0) {
-                return true
+            // Ensure we have valid data for this check
+            if (ballsPlayed > 0 && battingFirst.isNotEmpty() && bowlingFirst.isNotEmpty()) {
+                // Special handling for PVC mode to prevent premature innings completion
+                if (gameMode == GameMode.PVC && bowlingFirst == team2Name && !isComputerPlaying) {
+                    // In PVC mode, when human is batting in second innings, only end when human exceeds target
+                    if (secondInningsScore > firstInningsScore) {
+                        return true
+                    }
+                } else if (gameMode == GameMode.PVC && bowlingFirst == team1Name && isComputerPlaying) {
+                    // In PVC mode, when computer is batting in second innings, only end when target is reached
+                    if (secondInningsScore > firstInningsScore) {
+                        return true
+                    }
+                } else {
+                    // Regular PVP logic - end innings when target is exceeded
+                    if (secondInningsScore > firstInningsScore) {
+                        return true
+                    }
+                }
             }
         }
         

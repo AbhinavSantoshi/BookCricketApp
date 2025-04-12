@@ -265,7 +265,7 @@ fun HomeScreen(
                                 Icon(
                                     imageVector = Icons.Default.Info,
                                     contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary
+                                    tint = MaterialTheme.colorScheme.onSecondary
                                 )
                                 
                                 CricketText(
@@ -295,7 +295,7 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(4.dp))
                 
                 Text(
-                    text = "© 2025 Book Cricket",
+                    text = "© 2025 Santoshi Softwares",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                 )

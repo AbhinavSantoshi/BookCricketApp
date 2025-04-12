@@ -18,65 +18,65 @@ import androidx.core.view.WindowCompat
 import com.example.bookcricketapp.ui.theme.BookCricketTypography
 
 private val LightColorScheme = lightColorScheme(
-    primary = ScoreboardBlue,
+    primary = CricketBlue,
     onPrimary = Color.White,
-    primaryContainer = DeepBlue,
-    onPrimaryContainer = Color(0xFF002039),
+    primaryContainer = LightBlue,
+    onPrimaryContainer = DarkestBlue,
     
     secondary = PitchGreen,
     onSecondary = Color.White,
-    secondaryContainer = BrightGreen,
-    onSecondaryContainer = Color(0xFF002200),
+    secondaryContainer = LightGreen,
+    onSecondaryContainer = DarkestGreen,
     
-    tertiary = CricketOrange,
+    tertiary = BoundaryOrange,
     onTertiary = Color.White,
-    tertiaryContainer = LightWood,
+    tertiaryContainer = BoundaryOrange.copy(alpha = 0.2f),
     onTertiaryContainer = Color(0xFF3F1500),
     
-    error = CricketRed,
-    errorContainer = Color(0xFFFFDAD6),
+    error = ActionRed,
+    errorContainer = ActionRed.copy(alpha = 0.2f),
     onError = Color.White,
     onErrorContainer = Color(0xFF410002),
     
     background = LightBackground,
-    onBackground = Color(0xFF1A1C19),
+    onBackground = LightOnSurface,
     surface = LightSurface,
-    onSurface = Color(0xFF1A1C19),
+    onSurface = LightOnSurface,
     
-    surfaceVariant = Color(0xFFE8F5E9),
-    onSurfaceVariant = Color(0xFF43483F),
-    outline = Color(0xFF73796E)
+    surfaceVariant = LightGray,
+    onSurfaceVariant = DarkGray,
+    outline = MediumGray
 )
 
 private val DarkColorScheme = darkColorScheme(
-    primary = ScoreboardBlue,
+    primary = CricketBlue,
     onPrimary = Color.Black,
-    primaryContainer = Color(0xFF004A77),
-    onPrimaryContainer = DeepBlue,
+    primaryContainer = DeepBlue,
+    onPrimaryContainer = LightBlue,
     
     secondary = PitchGreen,
     onSecondary = Color.Black,
-    secondaryContainer = Color(0xFF005313),
-    onSecondaryContainer = BrightGreen,
+    secondaryContainer = DeepGreen,
+    onSecondaryContainer = LightGreen,
     
-    tertiary = CricketOrange,
+    tertiary = BoundaryOrange,
     onTertiary = Color.Black,
-    tertiaryContainer = Color(0xFF5D3F35),
-    onTertiaryContainer = LightWood,
+    tertiaryContainer = BoundaryOrange.copy(alpha = 0.3f),
+    onTertiaryContainer = BoundaryOrange.copy(alpha = 0.8f),
     
-    error = CricketRed,
-    errorContainer = Color(0xFF93000A),
-    onError = Color(0xFF690005),
-    onErrorContainer = Color(0xFFFFDAD6),
+    error = ActionRed,
+    errorContainer = ActionRed.copy(alpha = 0.3f),
+    onError = Color.Black,
+    onErrorContainer = ActionRed.copy(alpha = 0.8f),
     
     background = DarkBackground,
-    onBackground = Color(0xFFE2E3DD),
+    onBackground = DarkOnSurface,
     surface = DarkSurface,
-    onSurface = Color(0xFFE2E3DD),
+    onSurface = DarkOnSurface,
     
-    surfaceVariant = Color(0xFF43483F),
-    onSurfaceVariant = Color(0xFFC3C8BC),
-    outline = Color(0xFF8D9387)
+    surfaceVariant = VeryDarkGray,
+    onSurfaceVariant = LightGray,
+    outline = MediumGray
 )
 
 @Composable
