@@ -1,10 +1,11 @@
 package com.example.bookcricketapp.navigation
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.activity.compose.BackHandler
+import androidx.compose.runtime.*
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.bookcricketapp.components.ExitConfirmationDialog
 import com.example.bookcricketapp.screens.*
 import com.example.bookcricketapp.viewmodels.GameViewModel
 
@@ -55,6 +56,27 @@ fun AppNavigation(
         
         // Toss Screen
         composable(route = Screen.Toss.route) {
+            // Handle back button on Toss screen
+            var showExitDialog by remember { mutableStateOf(false) }
+            
+            BackHandler {
+                showExitDialog = true
+            }
+            
+            if (showExitDialog) {
+                ExitConfirmationDialog(
+                    onContinueClick = { showExitDialog = false },
+                    onExitClick = {
+                        showExitDialog = false
+                        gameViewModel.resetGame()
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Home.route) { inclusive = true }
+                        }
+                    },
+                    onDismissRequest = { showExitDialog = false }
+                )
+            }
+            
             TossScreen(
                 gameViewModel = gameViewModel,
                 onTossComplete = { navController.navigate(Screen.FirstInnings.route) }
@@ -63,6 +85,27 @@ fun AppNavigation(
         
         // First Innings Screen
         composable(route = Screen.FirstInnings.route) {
+            // Handle back button on First Innings screen
+            var showExitDialog by remember { mutableStateOf(false) }
+            
+            BackHandler {
+                showExitDialog = true
+            }
+            
+            if (showExitDialog) {
+                ExitConfirmationDialog(
+                    onContinueClick = { showExitDialog = false },
+                    onExitClick = {
+                        showExitDialog = false
+                        gameViewModel.resetGame()
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Home.route) { inclusive = true }
+                        }
+                    },
+                    onDismissRequest = { showExitDialog = false }
+                )
+            }
+            
             InningsScreen(
                 gameViewModel = gameViewModel,
                 isFirstInnings = true,
@@ -75,6 +118,27 @@ fun AppNavigation(
         
         // Innings Break Screen
         composable(route = Screen.InningsBreak.route) {
+            // Handle back button on Innings Break screen
+            var showExitDialog by remember { mutableStateOf(false) }
+            
+            BackHandler {
+                showExitDialog = true
+            }
+            
+            if (showExitDialog) {
+                ExitConfirmationDialog(
+                    onContinueClick = { showExitDialog = false },
+                    onExitClick = {
+                        showExitDialog = false
+                        gameViewModel.resetGame()
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Home.route) { inclusive = true }
+                        }
+                    },
+                    onDismissRequest = { showExitDialog = false }
+                )
+            }
+            
             InningsBreakScreen(
                 gameViewModel = gameViewModel,
                 onNavigateToSecondInnings = {
@@ -87,6 +151,27 @@ fun AppNavigation(
         
         // Second Innings Screen
         composable(route = Screen.SecondInnings.route) {
+            // Handle back button on Second Innings screen
+            var showExitDialog by remember { mutableStateOf(false) }
+            
+            BackHandler {
+                showExitDialog = true
+            }
+            
+            if (showExitDialog) {
+                ExitConfirmationDialog(
+                    onContinueClick = { showExitDialog = false },
+                    onExitClick = {
+                        showExitDialog = false
+                        gameViewModel.resetGame()
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Home.route) { inclusive = true }
+                        }
+                    },
+                    onDismissRequest = { showExitDialog = false }
+                )
+            }
+            
             // Ensure second innings stats are properly reset when this screen is entered
             LaunchedEffect(key1 = true) {
                 if (!gameViewModel.isFirstInningsOver) {

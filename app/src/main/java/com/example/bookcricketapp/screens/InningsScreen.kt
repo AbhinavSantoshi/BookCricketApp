@@ -31,6 +31,7 @@ fun InningsScreen(
     onInningsComplete: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
+    val scrollState = rememberScrollState()
     val battingTeam = if (isFirstInnings) gameViewModel.battingFirst else gameViewModel.bowlingFirst
     val bowlingTeam = if (isFirstInnings) gameViewModel.bowlingFirst else gameViewModel.battingFirst
 
@@ -192,7 +193,8 @@ fun InningsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp, vertical = 24.dp),
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             AnimatedVisibility(
@@ -202,7 +204,7 @@ fun InningsScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 16.dp),
+                        .padding(bottom = 8.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = if (isFirstInnings)
@@ -215,7 +217,7 @@ fun InningsScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 12.dp),
+                            .padding(vertical = 8.dp),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -235,7 +237,7 @@ fun InningsScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                    .padding(bottom = 8.dp),
                 shape = RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surface
@@ -245,7 +247,7 @@ fun InningsScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(12.dp),
+                        .padding(8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -293,7 +295,7 @@ fun InningsScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp),
+                    .padding(vertical = 4.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surface
@@ -303,7 +305,7 @@ fun InningsScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(12.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Row(
@@ -334,7 +336,7 @@ fun InningsScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     Column(
                         modifier = Modifier.fillMaxWidth(),
@@ -372,7 +374,7 @@ fun InningsScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -427,7 +429,7 @@ fun InningsScreen(
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 8.dp),
+                                .padding(vertical = 6.dp),
                             shape = RoundedCornerShape(12.dp),
                             colors = CardDefaults.cardColors(
                                 containerColor = if (remainingRuns <= remainingBalls / 2)
@@ -441,7 +443,7 @@ fun InningsScreen(
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(12.dp),
+                                    .padding(10.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Text(
@@ -450,7 +452,7 @@ fun InningsScreen(
                                     color = MaterialTheme.colorScheme.onSecondaryContainer
                                 )
 
-                                Spacer(modifier = Modifier.height(4.dp))
+                                Spacer(modifier = Modifier.height(2.dp))
 
                                 Text(
                                     text = "$remainingRuns runs from $remainingBalls balls",
@@ -459,7 +461,7 @@ fun InningsScreen(
                                     color = MaterialTheme.colorScheme.onSecondaryContainer
                                 )
 
-                                Spacer(modifier = Modifier.height(4.dp))
+                                Spacer(modifier = Modifier.height(2.dp))
 
                                 Text(
                                     text = "Required rate: ${String.format("%.2f", remainingRuns.toFloat() * 6 / remainingBalls.coerceAtLeast(1))}",
@@ -472,7 +474,8 @@ fun InningsScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            // Flexible space that shrinks on smaller screens
+            Spacer(modifier = Modifier.height(8.dp))
 
             AnimatedVisibility(
                 visible = flipMessageVisible,
@@ -482,7 +485,7 @@ fun InningsScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 12.dp),
+                        .padding(vertical = 8.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = when {
@@ -495,7 +498,7 @@ fun InningsScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(12.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         val baseColor = when {
@@ -516,7 +519,7 @@ fun InningsScreen(
 
                         Box(
                             modifier = Modifier
-                                .size(60.dp)
+                                .size(50.dp)
                                 .background(
                                     color = baseColor.copy(alpha = 0.2f),
                                     shape = CircleShape
@@ -530,13 +533,13 @@ fun InningsScreen(
                         ) {
                             Text(
                                 text = runValue,
-                                fontSize = 28.sp,
+                                fontSize = 24.sp,
                                 fontWeight = FontWeight.ExtraBold,
                                 color = baseColor
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
                         Text(
                             text = flipMessage,
@@ -553,18 +556,18 @@ fun InningsScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(100.dp) // Keep the height the same as it was fine
-                        .padding(vertical = 8.dp), // Reduce vertical padding to balance top/bottom spacing
+                        .height(80.dp) // Reduced height
+                        .padding(vertical = 4.dp), // Reduced padding
                     contentAlignment = Alignment.Center
                 ) {
                     Card(
                         modifier = Modifier
-                            .fillMaxWidth(0.85f) // Slightly wider for better appearance
+                            .fillMaxWidth(0.85f)
                             .shadow(
-                                elevation = 12.dp, // Increased elevation for better pop
-                                shape = RoundedCornerShape(20.dp) // Increased corner radius
+                                elevation = 8.dp,
+                                shape = RoundedCornerShape(16.dp)
                             ),
-                        shape = RoundedCornerShape(20.dp), // Matching corner radius
+                        shape = RoundedCornerShape(16.dp),
                         colors = CardDefaults.cardColors(
                             containerColor = when {
                                 isWicketFalling -> MaterialTheme.colorScheme.error
@@ -576,7 +579,7 @@ fun InningsScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 24.dp, horizontal = 16.dp), // Adjusted vertical padding for better balance
+                                .padding(vertical = 16.dp, horizontal = 16.dp), // Reduced padding
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -589,7 +592,7 @@ fun InningsScreen(
 
                             Text(
                                 text = animationText,
-                                style = MaterialTheme.typography.headlineLarge, // Increased text size
+                                style = MaterialTheme.typography.headlineMedium, // Reduced text size
                                 fontWeight = FontWeight.ExtraBold,
                                 color = Color.White,
                                 textAlign = TextAlign.Center
@@ -599,14 +602,13 @@ fun InningsScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             Button(
                 onClick = { if (!isInningsCompleted) handlePageFlip() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(60.dp)
-                    .padding(vertical = 4.dp),
+                    .height(50.dp), // Reduced button height
                 enabled = !isInningsCompleted && 
                         (!gameViewModel.isComputerPlaying) &&
                         (!isWicketFalling) && 
@@ -642,6 +644,7 @@ fun InningsScreen(
                 )
             }
 
+            // Added small padding at the bottom to ensure the button isn't flush with screen edge
             Spacer(modifier = Modifier.height(8.dp))
         }
     }

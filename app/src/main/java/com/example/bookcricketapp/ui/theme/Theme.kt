@@ -52,30 +52,30 @@ private val DarkColorScheme = darkColorScheme(
     primary = CricketBlue,
     onPrimary = Color.Black,
     primaryContainer = DeepBlue,
-    onPrimaryContainer = LightBlue,
+    onPrimaryContainer = Color.White,  // Increased contrast
     
     secondary = PitchGreen,
     onSecondary = Color.Black,
     secondaryContainer = DeepGreen,
-    onSecondaryContainer = LightGreen,
+    onSecondaryContainer = Color.White,  // Increased contrast
     
     tertiary = BoundaryOrange,
     onTertiary = Color.Black,
     tertiaryContainer = BoundaryOrange.copy(alpha = 0.3f),
-    onTertiaryContainer = BoundaryOrange.copy(alpha = 0.8f),
+    onTertiaryContainer = Color.White,  // Increased contrast
     
     error = ActionRed,
     errorContainer = ActionRed.copy(alpha = 0.3f),
     onError = Color.Black,
-    onErrorContainer = ActionRed.copy(alpha = 0.8f),
+    onErrorContainer = Color.White,  // Increased contrast
     
     background = DarkBackground,
     onBackground = DarkOnSurface,
     surface = DarkSurface,
-    onSurface = DarkOnSurface,
+    onSurface = Color.White.copy(alpha = 0.85f),  // Brighter for better visibility
     
     surfaceVariant = VeryDarkGray,
-    onSurfaceVariant = LightGray,
+    onSurfaceVariant = Color.White.copy(alpha = 0.7f),  // Much brighter for better visibility
     outline = MediumGray
 )
 
