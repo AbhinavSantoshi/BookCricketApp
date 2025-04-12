@@ -33,19 +33,55 @@ fun ResultsScreen(
     val scrollState = rememberScrollState()
     var showContent by remember { mutableStateOf(false) }
     
-    // Get match result details
-    val team1Name = gameViewModel.team1Name
-    val team2Name = gameViewModel.team2Name
-    val team1Score = gameViewModel.team1Score
-    val team1Wickets = gameViewModel.team1Wickets
-    val team1Overs = "${gameViewModel.team1BallsPlayed / 6}.${gameViewModel.team1BallsPlayed % 6}"
-    val team2Score = gameViewModel.team2Score
-    val team2Wickets = gameViewModel.team2Wickets
-    val team2Overs = "${gameViewModel.team2BallsPlayed / 6}.${gameViewModel.team2BallsPlayed % 6}"
+    // Capture the game state when the screen first loads to prevent changes during navigation
+    // This will preserve the match results even if the game state resets
+    val initialState = remember {
+        // Create a data class to hold all the relevant game state
+        data class MatchResult(
+            val team1Name: String,
+            val team2Name: String,
+            val team1Score: Int,
+            val team1Wickets: Int,
+            val team1BallsPlayed: Int,
+            val team2Score: Int,
+            val team2Wickets: Int,
+            val team2BallsPlayed: Int,
+            val battingFirst: String,
+            val bowlingFirst: String,
+            val totalOvers: Int,
+            val wicketsPerTeam: Int
+        )
+        
+        // Capture all the game state needed to display results
+        MatchResult(
+            team1Name = gameViewModel.team1Name,
+            team2Name = gameViewModel.team2Name,
+            team1Score = gameViewModel.team1Score,
+            team1Wickets = gameViewModel.team1Wickets,
+            team1BallsPlayed = gameViewModel.team1BallsPlayed,
+            team2Score = gameViewModel.team2Score,
+            team2Wickets = gameViewModel.team2Wickets,
+            team2BallsPlayed = gameViewModel.team2BallsPlayed,
+            battingFirst = gameViewModel.battingFirst,
+            bowlingFirst = gameViewModel.bowlingFirst,
+            totalOvers = gameViewModel.totalOvers,
+            wicketsPerTeam = gameViewModel.wicketsPerTeam
+        )
+    }
+    
+    // Use the captured state values instead of directly accessing the ViewModel
+    val team1Name = initialState.team1Name
+    val team2Name = initialState.team2Name
+    val team1Score = initialState.team1Score
+    val team1Wickets = initialState.team1Wickets
+    val team1Overs = "${initialState.team1BallsPlayed / 6}.${initialState.team1BallsPlayed % 6}"
+    val team2Score = initialState.team2Score
+    val team2Wickets = initialState.team2Wickets
+    val team2Overs = "${initialState.team2BallsPlayed / 6}.${initialState.team2BallsPlayed % 6}"
     
     // Determine which team batted first and second
-    val firstInningsTeamName = gameViewModel.battingFirst
-    val secondInningsTeamName = gameViewModel.bowlingFirst
+    val firstInningsTeamName = initialState.battingFirst
+    val secondInningsTeamName = initialState.bowlingFirst
     
     // Set the correct scores based on batting order
     val firstInningsScore: Int
@@ -82,7 +118,14 @@ fun ResultsScreen(
     } else if (firstInningsWon) {
         "${firstInningsScore - secondInningsScore} runs"
     } else {
-        "${gameViewModel.wicketsPerTeam - secondInningsWickets} wickets"
+        "${initialState.wicketsPerTeam - secondInningsWickets} wickets"
+    }
+    
+    // Helper function to calculate run rate
+    fun getRunRate(runs: Int, balls: Int): String {
+        if (balls == 0) return "0.00"
+        val runRate = (runs.toFloat() * 6) / balls
+        return String.format("%.2f", runRate)
     }
     
     // Background gradient
@@ -240,7 +283,7 @@ fun ResultsScreen(
                             )
                             
                             Text(
-                                text = "RR: ${gameViewModel.getRunRate(firstInningsScore, if (firstInningsTeamName == team1Name) gameViewModel.team1BallsPlayed else gameViewModel.team2BallsPlayed)}",
+                                text = "RR: ${getRunRate(firstInningsScore, if (firstInningsTeamName == team1Name) initialState.team1BallsPlayed else initialState.team2BallsPlayed)}",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                             )
@@ -317,7 +360,7 @@ fun ResultsScreen(
                             )
                             
                             Text(
-                                text = "RR: ${gameViewModel.getRunRate(secondInningsScore, if (secondInningsTeamName == team1Name) gameViewModel.team1BallsPlayed else gameViewModel.team2BallsPlayed)}",
+                                text = "RR: ${getRunRate(secondInningsScore, if (secondInningsTeamName == team1Name) initialState.team1BallsPlayed else initialState.team2BallsPlayed)}",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                             )
@@ -344,11 +387,11 @@ fun ResultsScreen(
                         Text(
                             text = if (isTie) {
                                 "The match ended in a tie with both teams scoring $firstInningsScore runs in their allotted overs."
-                            } else if (gameViewModel.matchWinner == firstInningsTeamName) {
+                            } else if (firstInningsWon) {
                                 "$firstInningsTeamName successfully defended their total, winning by $margin."
                             } else {
-                                val remainingBalls = gameViewModel.totalOvers * 6 - 
-                                    (if (secondInningsTeamName == team1Name) gameViewModel.team1BallsPlayed else gameViewModel.team2BallsPlayed)
+                                val remainingBalls = initialState.totalOvers * 6 - 
+                                    (if (secondInningsTeamName == team1Name) initialState.team1BallsPlayed else initialState.team2BallsPlayed)
                                 if (remainingBalls > 0) {
                                     "$secondInningsTeamName chased down the target with $remainingBalls balls remaining."
                                 } else {

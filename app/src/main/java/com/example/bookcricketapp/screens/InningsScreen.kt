@@ -553,31 +553,30 @@ fun InningsScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(80.dp)
-                        .padding(vertical = 8.dp),
+                        .height(100.dp) // Keep the height the same as it was fine
+                        .padding(vertical = 8.dp), // Reduce vertical padding to balance top/bottom spacing
                     contentAlignment = Alignment.Center
                 ) {
                     Card(
                         modifier = Modifier
-                            .fillMaxWidth(0.8f)
+                            .fillMaxWidth(0.85f) // Slightly wider for better appearance
                             .shadow(
-                                elevation = 8.dp,
-                                shape = RoundedCornerShape(16.dp)
+                                elevation = 12.dp, // Increased elevation for better pop
+                                shape = RoundedCornerShape(20.dp) // Increased corner radius
                             ),
-                        shape = RoundedCornerShape(16.dp),
+                        shape = RoundedCornerShape(20.dp), // Matching corner radius
                         colors = CardDefaults.cardColors(
-                            containerColor = if (isWicketFalling)
-                                MaterialTheme.colorScheme.error
-                            else if (currentRunAnimation == "four")
-                                MaterialTheme.colorScheme.primary
-                            else
-                                MaterialTheme.colorScheme.tertiary
+                            containerColor = when {
+                                isWicketFalling -> MaterialTheme.colorScheme.error
+                                currentRunAnimation == "four" -> MaterialTheme.colorScheme.primary
+                                else -> MaterialTheme.colorScheme.tertiary
+                            }
                         )
                     ) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(16.dp),
+                                .padding(vertical = 24.dp, horizontal = 16.dp), // Adjusted vertical padding for better balance
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -590,7 +589,7 @@ fun InningsScreen(
 
                             Text(
                                 text = animationText,
-                                style = MaterialTheme.typography.headlineMedium,
+                                style = MaterialTheme.typography.headlineLarge, // Increased text size
                                 fontWeight = FontWeight.ExtraBold,
                                 color = Color.White,
                                 textAlign = TextAlign.Center

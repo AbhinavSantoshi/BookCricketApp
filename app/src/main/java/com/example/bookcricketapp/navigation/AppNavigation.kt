@@ -1,6 +1,7 @@
 package com.example.bookcricketapp.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -86,6 +87,14 @@ fun AppNavigation(
         
         // Second Innings Screen
         composable(route = Screen.SecondInnings.route) {
+            // Ensure second innings stats are properly reset when this screen is entered
+            LaunchedEffect(key1 = true) {
+                if (!gameViewModel.isFirstInningsOver) {
+                    gameViewModel.isFirstInningsOver = true
+                }
+                gameViewModel.prepareSecondInnings()
+            }
+            
             InningsScreen(
                 gameViewModel = gameViewModel,
                 isFirstInnings = false,
@@ -98,10 +107,13 @@ fun AppNavigation(
             ResultsScreen(
                 gameViewModel = gameViewModel,
                 onPlayAgainClick = { 
-                    gameViewModel.resetGame()
+                    // Navigate first, then reset game state to prevent 
+                    // ResultsScreen from seeing the reset state (which briefly shows as a tie)
                     navController.navigate(Screen.MatchSettings.route) {
                         popUpTo(Screen.Home.route) { inclusive = false }
                     }
+                    // Only reset after navigation has been dispatched
+                    gameViewModel.resetGame()
                 },
                 onHomeClick = {
                     // Navigate first, then reset game state to prevent 

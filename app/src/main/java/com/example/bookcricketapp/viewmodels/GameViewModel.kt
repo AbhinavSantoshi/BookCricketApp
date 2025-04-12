@@ -173,8 +173,12 @@ class GameViewModel : ViewModel() {
     }
     
     fun isInningsComplete(isFirstInnings: Boolean): Boolean {
-        val ballsPlayed = if (isFirstInnings) team1BallsPlayed else team2BallsPlayed
-        val wickets = if (isFirstInnings) team1Wickets else team2Wickets
+        // Get the name of the team currently batting
+        val currentBattingTeam = if (isFirstInnings) battingFirst else bowlingFirst
+        
+        // Check the correct stats based on which team is batting
+        val ballsPlayed = if (currentBattingTeam == team1Name) team1BallsPlayed else team2BallsPlayed
+        val wickets = if (currentBattingTeam == team1Name) team1Wickets else team2Wickets
         val maxBalls = totalOvers * 6
         
         // Check if all balls are played or all wickets are lost
