@@ -571,7 +571,7 @@ fun InningsScreen(
                         colors = CardDefaults.cardColors(
                             containerColor = when {
                                 isWicketFalling -> MaterialTheme.colorScheme.error
-                                currentRunAnimation == "four" -> MaterialTheme.colorScheme.primary
+                                currentRunAnimation == "four" -> MaterialTheme.colorScheme.tertiary // Changed from primary to tertiary (BoundaryOrange)
                                 else -> MaterialTheme.colorScheme.tertiary
                             }
                         )

@@ -18,7 +18,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -48,6 +52,111 @@ private data class Confetti(
     val rotation: Float, 
     val speed: Float
 )
+
+// Custom cricket bat icon composable
+@Composable
+fun CricketBatIcon(
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.onPrimary
+) {
+    Canvas(modifier = modifier.size(24.dp)) {
+        // Handle (grip) of the bat
+        drawRect(
+            color = Color(0xFF8B4513), // Brown wooden handle
+            topLeft = Offset(size.width * 0.4f, 0f),
+            size = Size(size.width * 0.2f, size.height * 0.4f)
+        )
+        
+        // Bat blade with light wood color and grip binding at top
+        drawRoundRect(
+            color = Color(0xFFE3C9A0), // Light wood color for blade
+            topLeft = Offset(0f, size.height * 0.37f),
+            size = Size(size.width, size.height * 0.63f),
+            cornerRadius = CornerRadius(size.width * 0.1f, size.width * 0.1f)
+        )
+        
+        // Grip binding detail
+        for (i in 0..2) {
+            drawLine(
+                color = Color.Black.copy(alpha = 0.7f),
+                start = Offset(size.width * 0.4f, size.height * 0.1f + i * 5),
+                end = Offset(size.width * 0.6f, size.height * 0.1f + i * 5),
+                strokeWidth = 1.5f
+            )
+        }
+        
+        // Bat edge detail
+        drawLine(
+            color = Color.Black.copy(alpha = 0.3f),
+            start = Offset(size.width * 0.1f, size.height * 0.5f),
+            end = Offset(size.width * 0.1f, size.height * 0.9f),
+            strokeWidth = 1f
+        )
+        drawLine(
+            color = Color.Black.copy(alpha = 0.3f),
+            start = Offset(size.width * 0.9f, size.height * 0.5f),
+            end = Offset(size.width * 0.9f, size.height * 0.9f),
+            strokeWidth = 1f
+        )
+    }
+}
+
+// Custom cricket ball icon composable
+@Composable
+fun CricketBallIcon(
+    modifier: Modifier = Modifier,
+    color: Color = Color(0xFFAA0000) // Cricket ball red
+) {
+    Canvas(modifier = modifier.size(20.dp)) {
+        // Main ball shape
+        drawCircle(
+            brush = Brush.radialGradient(
+                colors = listOf(
+                    color,
+                    color.copy(alpha = 0.7f)
+                )
+            ),
+            radius = size.width / 2
+        )
+        
+        // Seam details
+        drawArc(
+            color = Color.White,
+            startAngle = 0f,
+            sweepAngle = 360f,
+            useCenter = false,
+            style = Stroke(width = size.width * 0.05f),
+            size = Size(size.width * 0.8f, size.height * 0.8f),
+            topLeft = Offset(size.width * 0.1f, size.height * 0.1f)
+        )
+        
+        // Cross seam details
+        rotate(degrees = 30f) {
+            drawLine(
+                color = Color.White,
+                start = Offset(size.width / 2, size.height * 0.2f),
+                end = Offset(size.width / 2, size.height * 0.8f),
+                strokeWidth = size.width * 0.05f
+            )
+        }
+        
+        rotate(degrees = 120f) {
+            drawLine(
+                color = Color.White,
+                start = Offset(size.width / 2, size.height * 0.2f),
+                end = Offset(size.width / 2, size.height * 0.8f),
+                strokeWidth = size.width * 0.05f
+            )
+        }
+        
+        // Highlight for 3D effect
+        drawCircle(
+            color = Color.White.copy(alpha = 0.3f),
+            radius = size.width * 0.2f,
+            center = Offset(size.width * 0.35f, size.height * 0.35f)
+        )
+    }
+}
 
 @Composable
 fun TossScreen(
@@ -201,24 +310,30 @@ fun TossScreen(
             // Determine toss result
             val isHeads = Random.nextBoolean()
             coinResult = if (isHeads) TossResult.HEADS else TossResult.TAILS
+            
+            // First determine if player 1 (user) won the toss based on their choice
             tossWon = (userSelectedHeads && isHeads) || (!userSelectedHeads && !isHeads)
             
-            // Set toss winner based on result
-            if (tossWon) {
-                gameViewModel.tossWinner = gameViewModel.team1Name
+            // Set toss winner based on result - this determines who gets to choose batting/bowling
+            if (gameViewModel.gameMode.name == "PVP") {
+                // In PVP mode, toss should be determined by user's coin choice
+                gameViewModel.tossWinner = if (tossWon) gameViewModel.team1Name else gameViewModel.team2Name
+                // tossWon is already set correctly above - true if team1 won, false if team2 won
             } else {
-                gameViewModel.tossWinner = gameViewModel.team2Name
+                // In PVC mode, tossWon determines if player (team1) or computer (team2) won
+                gameViewModel.tossWinner = if (tossWon) gameViewModel.team1Name else gameViewModel.team2Name
             }
             
-            // If computer wins, it chooses to bat
+            // If computer wins in PVC mode, it automatically chooses to bat
             if (!tossWon && gameViewModel.gameMode.name == "PVC") {
                 gameViewModel.battingFirst = gameViewModel.team2Name
                 gameViewModel.bowlingFirst = gameViewModel.team1Name
-            } else if (!tossWon) {
-                // In PVP mode, default choice for simplicity
-                gameViewModel.battingFirst = gameViewModel.team2Name
-                gameViewModel.bowlingFirst = gameViewModel.team1Name
+                // No need to show batting choice UI since computer has already chosen
+                battingChoiceMade = true
             }
+            
+            // For PVP mode, regardless of who won, we'll show the batting choice UI
+            // This way both Player A and Player B get to make a choice when they win
             
             // Wait for flip animations to complete
             delay(800)
@@ -281,9 +396,7 @@ fun TossScreen(
             }
                 
             // If player won the toss, show batting/bowling choice
-            if (tossWon) {
-                showBattingChoice = true
-            }
+            showBattingChoice = true // Always show some batting choice UI, but it will be conditional in the UI based on who won
         }
     }
     
@@ -328,14 +441,14 @@ fun TossScreen(
                         .padding(vertical = 16.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.9f)
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
                     ),
-                    elevation = CardDefaults.cardElevation(4.dp)
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                 ) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(20.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
@@ -410,7 +523,8 @@ fun TossScreen(
                         )
                         .background(
                             brush = Brush.radialGradient(
-                                colors = if (flipRotationY.value % 360 < 90 || flipRotationY.value % 360 > 270) {
+                                colors = if ((coinResult == TossResult.HEADS && coinFlipAnimationFinished) || 
+                                           (flipRotationY.value % 360 < 90 || flipRotationY.value % 360 > 270) && !coinFlipAnimationFinished) {
                                     // Heads side - adaptive colors for light/dark mode
                                     listOf(
                                         MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),   // Base surface color
@@ -433,7 +547,11 @@ fun TossScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     // Show different sides based on rotation with fade effect during transition
-                    val isHeadsSideVisible = flipRotationY.value % 360 < 90 || flipRotationY.value % 360 > 270
+                    val isHeadsSideVisible = if (coinFlipAnimationFinished) {
+                        coinResult == TossResult.HEADS
+                    } else {
+                        flipRotationY.value % 360 < 90 || flipRotationY.value % 360 > 270
+                    }
                     val transitionFactor = if (flipRotationY.value % 180 > 80 && flipRotationY.value % 180 < 100) {
                         // Create fade effect during transition
                         val progress = (flipRotationY.value % 180 - 80) / 20f
@@ -684,31 +802,48 @@ fun TossScreen(
                                 textAlign = TextAlign.Center
                             )
                             
-                            // Only show batting choice message when choice is made or AI chose
-                            if (!tossWon || (tossWon && battingChoiceMade)) {
+                            // Only show batting/bowling choice message when a choice has been made
+                            if (battingChoiceMade) {
                                 Spacer(modifier = Modifier.height(16.dp))
                                 
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.Center
                                 ) {
-                                    // Cricket bat icon representation
+                                    // Cricket bat/ball icon based on choice
+                                    val chooseToBat = gameViewModel.battingFirst == gameViewModel.tossWinner
                                     Box(
-                                        modifier = Modifier
-                                            .size(20.dp, 20.dp)
-                                            .background(
+                                        modifier = Modifier.size(20.dp)
+                                    ) {
+                                        if (chooseToBat) {
+                                            CricketBatIcon(
                                                 color = if (tossWon)
                                                     MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
                                                 else
-                                                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
-                                                shape = RoundedCornerShape(2.dp)
+                                                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                                             )
-                                    )
+                                        } else {
+                                            CricketBallIcon(
+                                                color = if (tossWon)
+                                                    MaterialTheme.colorScheme.onPrimaryContainer
+                                                else
+                                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        }
+                                    }
                                     
                                     Spacer(modifier = Modifier.width(8.dp))
                                     
+                                    // Clear message showing who won and what they chose
+                                    val winner = gameViewModel.tossWinner
+                                    val choiceText = if (chooseToBat) {
+                                        "$winner chose to bat first"
+                                    } else {
+                                        "$winner chose to bowl first"
+                                    }
+                                    
                                     Text(
-                                        text = "${gameViewModel.battingFirst} will bat first",
+                                        text = choiceText,
                                         style = MaterialTheme.typography.titleSmall,
                                         fontWeight = FontWeight.Medium,
                                         color = if (tossWon) 
@@ -724,7 +859,7 @@ fun TossScreen(
                     
                     // Show batting/bowling choice when user wins the toss with improved animations
                     AnimatedVisibility(
-                        visible = showBattingChoice && !battingChoiceMade,
+                        visible = showBattingChoice && !battingChoiceMade && tossWon,
                         enter = fadeIn(animationSpec = tween(300, delayMillis = 300)) + 
                                 expandVertically(animationSpec = tween(500)),
                         exit = fadeOut() + shrinkVertically()
@@ -761,9 +896,10 @@ fun TossScreen(
                                     // Bat first button with icon
                                     CricketButton(
                                         onClick = {
-                                            // Choose to bat first
-                                            gameViewModel.battingFirst = gameViewModel.team1Name
-                                            gameViewModel.bowlingFirst = gameViewModel.team2Name
+                                            // Choose to bat first - the toss winner wants to bat
+                                            gameViewModel.battingFirst = gameViewModel.tossWinner
+                                            gameViewModel.bowlingFirst = if (gameViewModel.tossWinner == gameViewModel.team1Name) 
+                                                gameViewModel.team2Name else gameViewModel.team1Name
                                             battingChoiceMade = true
                                         },
                                         buttonType = ButtonType.PRIMARY,
@@ -776,14 +912,9 @@ fun TossScreen(
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.Center
                                         ) {
-                                            // Enhanced bat icon placeholder
-                                            Box(
-                                                modifier = Modifier
-                                                    .size(24.dp, 24.dp)
-                                                    .background(
-                                                        color = MaterialTheme.colorScheme.onPrimary,
-                                                        shape = RoundedCornerShape(4.dp, 4.dp, 2.dp, 2.dp)
-                                                    )
+                                            CricketBatIcon(
+                                                modifier = Modifier.size(24.dp),
+                                                color = MaterialTheme.colorScheme.onPrimary
                                             )
                                             
                                             Spacer(modifier = Modifier.width(8.dp))
@@ -798,9 +929,10 @@ fun TossScreen(
                                     // Bowl first button with icon
                                     CricketButton(
                                         onClick = {
-                                            // Choose to bowl first
-                                            gameViewModel.battingFirst = gameViewModel.team2Name
-                                            gameViewModel.bowlingFirst = gameViewModel.team1Name
+                                            // Choose to bowl first - the toss winner wants to bowl
+                                            gameViewModel.bowlingFirst = gameViewModel.tossWinner
+                                            gameViewModel.battingFirst = if (gameViewModel.tossWinner == gameViewModel.team1Name) 
+                                                gameViewModel.team2Name else gameViewModel.team1Name
                                             battingChoiceMade = true
                                         },
                                         buttonType = ButtonType.SECONDARY,
@@ -813,19 +945,113 @@ fun TossScreen(
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.Center
                                         ) {
-                                            // Enhanced ball icon placeholder
-                                            Box(
-                                                modifier = Modifier
-                                                    .size(20.dp, 20.dp)
-                                                    .clip(CircleShape)
-                                                    .background(
-                                                        brush = Brush.radialGradient(
-                                                            colors = listOf(
-                                                                MaterialTheme.colorScheme.onSecondary,
-                                                                MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.7f)
-                                                            )
-                                                        )
-                                                    )
+                                            CricketBallIcon(
+                                                modifier = Modifier.size(20.dp),
+                                                color = MaterialTheme.colorScheme.onSecondary
+                                            )
+                                            
+                                            Spacer(modifier = Modifier.width(8.dp))
+                                            
+                                            CricketText(
+                                                text = "Bowl First",
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    // For Player B's choice in PVP mode when they win the toss
+                    AnimatedVisibility(
+                        visible = !tossWon && !battingChoiceMade && gameViewModel.gameMode.name == "PVP",
+                        enter = fadeIn(animationSpec = tween(300, delayMillis = 300)) + 
+                                expandVertically(animationSpec = tween(500)),
+                        exit = fadeOut() + shrinkVertically()
+                    ) {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surface
+                            ),
+                            elevation = CardDefaults.cardElevation(4.dp)
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(16.dp)
+                            ) {
+                                Text(
+                                    text = "${gameViewModel.team2Name}'s choice",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(vertical = 8.dp)
+                                )
+                                
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 12.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                                ) {
+                                    // Bat first button for player B
+                                    CricketButton(
+                                        onClick = {
+                                            // Player B chooses to bat first
+                                            gameViewModel.battingFirst = gameViewModel.team2Name
+                                            gameViewModel.bowlingFirst = gameViewModel.team1Name
+                                            battingChoiceMade = true
+                                        },
+                                        buttonType = ButtonType.PRIMARY,
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .shadow(elevation = 4.dp, shape = RoundedCornerShape(12.dp)),
+                                        shape = RoundedCornerShape(12.dp)
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Center
+                                        ) {
+                                            CricketBatIcon(
+                                                modifier = Modifier.size(24.dp),
+                                                color = MaterialTheme.colorScheme.onPrimary
+                                            )
+                                            
+                                            Spacer(modifier = Modifier.width(8.dp))
+                                            
+                                            CricketText(
+                                                text = "Bat First",
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        }
+                                    }
+                                    
+                                    // Bowl first button for player B
+                                    CricketButton(
+                                        onClick = {
+                                            // Player B chooses to bowl first
+                                            gameViewModel.bowlingFirst = gameViewModel.team2Name
+                                            gameViewModel.battingFirst = gameViewModel.team1Name
+                                            battingChoiceMade = true
+                                        },
+                                        buttonType = ButtonType.SECONDARY,
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .shadow(elevation = 4.dp, shape = RoundedCornerShape(12.dp)),
+                                        shape = RoundedCornerShape(12.dp)
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Center
+                                        ) {
+                                            CricketBallIcon(
+                                                modifier = Modifier.size(20.dp),
+                                                color = MaterialTheme.colorScheme.onSecondary
                                             )
                                             
                                             Spacer(modifier = Modifier.width(8.dp))
@@ -843,9 +1069,9 @@ fun TossScreen(
                     
                     Spacer(modifier = Modifier.height(24.dp))
                     
-                    // Show continue button only if the choice is made or AI chose with improved design
+                    // Show continue button only if the choice is made
                     AnimatedVisibility(
-                        visible = !tossWon || (tossWon && battingChoiceMade),
+                        visible = battingChoiceMade,
                         enter = fadeIn(animationSpec = tween(300)) + 
                                 expandVertically(animationSpec = tween(500)),
                         exit = fadeOut() + shrinkVertically()
