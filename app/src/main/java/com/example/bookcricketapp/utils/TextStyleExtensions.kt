@@ -91,6 +91,31 @@ fun ScaledHeadlineSmall(
 }
 
 /**
+ * Composable function for scaled headline medium text
+ */
+@Composable
+fun ScaledHeadlineMedium(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = Color.Unspecified,
+    fontWeight: FontWeight? = null,
+    textAlign: TextAlign? = null,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Clip
+) {
+    ScaledText(
+        text = text,
+        modifier = modifier,
+        style = MaterialTheme.typography.headlineMedium,
+        color = color,
+        fontWeight = fontWeight,
+        textAlign = textAlign,
+        maxLines = maxLines,
+        overflow = overflow
+    )
+}
+
+/**
  * Composable function for scaled title text
  */
 @Composable
@@ -141,10 +166,10 @@ fun ScaledTitleLarge(
 }
 
 /**
- * Composable function for scaled body text
+ * Composable function for scaled title small text
  */
 @Composable
-fun ScaledBodyMedium(
+fun ScaledTitleSmall(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
@@ -156,7 +181,109 @@ fun ScaledBodyMedium(
     ScaledText(
         text = text,
         modifier = modifier,
+        style = MaterialTheme.typography.titleSmall,
+        color = color,
+        fontWeight = fontWeight,
+        textAlign = textAlign,
+        maxLines = maxLines,
+        overflow = overflow
+    )
+}
+
+/**
+ * Composable function for scaled body text
+ */
+@Composable
+fun ScaledBodyMedium(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = Color.Unspecified,
+    fontWeight: FontWeight? = null,
+    textAlign: TextAlign? = null,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Clip
+) {
+    ScaledText(
+        text = text,
+        modifier = modifier,
         style = MaterialTheme.typography.bodyMedium,
+        color = color,
+        fontWeight = fontWeight,
+        textAlign = textAlign,
+        lineHeight = lineHeight,
+        maxLines = maxLines,
+        overflow = overflow
+    )
+}
+
+/**
+ * Composable function for scaled body large text
+ */
+@Composable
+fun ScaledBodyLarge(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = Color.Unspecified,
+    fontWeight: FontWeight? = null,
+    textAlign: TextAlign? = null,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Clip
+) {
+    ScaledText(
+        text = text,
+        modifier = modifier,
+        style = MaterialTheme.typography.bodyLarge,
+        color = color,
+        fontWeight = fontWeight,
+        textAlign = textAlign,
+        maxLines = maxLines,
+        overflow = overflow
+    )
+}
+
+/**
+ * Composable function for scaled label large text
+ */
+@Composable
+fun ScaledLabelLarge(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = Color.Unspecified,
+    fontWeight: FontWeight? = null,
+    textAlign: TextAlign? = null,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Clip
+) {
+    ScaledText(
+        text = text,
+        modifier = modifier,
+        style = MaterialTheme.typography.labelLarge,
+        color = color,
+        fontWeight = fontWeight,
+        textAlign = textAlign,
+        maxLines = maxLines,
+        overflow = overflow
+    )
+}
+
+/**
+ * Composable function for scaled label medium text
+ */
+@Composable
+fun ScaledLabelMedium(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = Color.Unspecified,
+    fontWeight: FontWeight? = null,
+    textAlign: TextAlign? = null,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Clip
+) {
+    ScaledText(
+        text = text,
+        modifier = modifier,
+        style = MaterialTheme.typography.labelMedium,
         color = color,
         fontWeight = fontWeight,
         textAlign = textAlign,

@@ -14,9 +14,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.bookcricketapp.utils.*
 
 @Composable
 fun CricketButton(
@@ -30,6 +32,8 @@ fun CricketButton(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
+    val uiScale = rememberUiScaleUtils()
+    val layoutDir = LocalLayoutDirection.current
     
     // Enhanced scale animation when pressed for better feedback
     val scale by animateFloatAsState(
@@ -95,7 +99,7 @@ fun CricketButton(
         )
     }
     
-    // Enhanced elevation effect
+    // Enhanced elevation effect with scaled values
     val elevation = when (buttonType) {
         ButtonType.OUTLINE -> ButtonDefaults.buttonElevation(
             defaultElevation = 0.dp,
@@ -103,8 +107,8 @@ fun CricketButton(
             disabledElevation = 0.dp
         )
         else -> ButtonDefaults.buttonElevation(
-            defaultElevation = 6.dp,
-            pressedElevation = 2.dp,
+            defaultElevation = uiScale.scaledDp(6.dp),
+            pressedElevation = uiScale.scaledDp(2.dp),
             disabledElevation = 0.dp
         )
     }
@@ -121,14 +125,17 @@ fun CricketButton(
                 OutlinedButton(
                     onClick = onClick,
                     modifier = Modifier
-                        .height(48.dp)
+                        .scaledHeight(48.dp)
                         .fillMaxWidth(),
                     enabled = enabled,
                     shape = shape,
                     interactionSource = interactionSource,
                     elevation = elevation,
                     colors = colors as ButtonColors,
-                    contentPadding = contentPadding,
+                    contentPadding = PaddingValues(
+                        horizontal = uiScale.scaledDp(contentPadding.calculateLeftPadding(layoutDir)),
+                        vertical = uiScale.scaledDp(contentPadding.calculateTopPadding())
+                    ),
                     content = content
                 )
             }
@@ -136,14 +143,17 @@ fun CricketButton(
                 Button(
                     onClick = onClick,
                     modifier = Modifier
-                        .height(48.dp)
+                        .scaledHeight(48.dp)
                         .fillMaxWidth(),
                     enabled = enabled,
                     shape = shape,
                     interactionSource = interactionSource,
                     elevation = elevation,
                     colors = colors,
-                    contentPadding = contentPadding,
+                    contentPadding = PaddingValues(
+                        horizontal = uiScale.scaledDp(contentPadding.calculateLeftPadding(layoutDir)),
+                        vertical = uiScale.scaledDp(contentPadding.calculateTopPadding())
+                    ),
                     content = content
                 )
             }
@@ -158,7 +168,9 @@ fun CricketText(
     fontWeight: FontWeight = FontWeight.Medium,
     color: Color = Color.Unspecified
 ) {
-    Text(
+    val uiScale = rememberUiScaleUtils()
+    
+    ScaledText(
         text = text,
         style = style,
         fontWeight = fontWeight,

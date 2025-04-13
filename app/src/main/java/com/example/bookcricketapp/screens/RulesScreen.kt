@@ -14,26 +14,27 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.example.bookcricketapp.utils.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RulesScreen(onNavigateBack: () -> Unit) {
     val scrollState = rememberScrollState()
+    val uiScale = rememberUiScaleUtils()
     
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { 
-                    Text(
-                        "How to Play",
+                    ScaledTitleMedium(
+                        text = "How to Play",
                         modifier = Modifier.semantics { heading() }
                     ) 
                 },
                 navigationIcon = {
                     IconButton(
                         onClick = onNavigateBack,
-                        modifier = Modifier.size(48.dp)
+                        modifier = Modifier.scaledSize(48.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
@@ -53,17 +54,16 @@ fun RulesScreen(onNavigateBack: () -> Unit) {
                 .padding(paddingValues)
                 .fillMaxSize()
                 .verticalScroll(scrollState)
-                .padding(16.dp),
+                .scaledPadding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
+            ScaledHeadlineSmall(
                 text = "Book Cricket Rules",
-                fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .padding(bottom = 24.dp)
+                    .scaledPadding(bottom = 24.dp)
                     .semantics { heading() }
             )
             
@@ -97,22 +97,21 @@ fun RulesScreen(onNavigateBack: () -> Unit) {
                 description = "The team that scores more runs wins the match. If both teams score the same number of runs, the match is tied."
             )
             
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.scaledHeight(24.dp))
             
             Button(
                 onClick = onNavigateBack,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 32.dp)
-                    .height(56.dp),
+                    .scaledPadding(horizontal = 32.dp)
+                    .scaledHeight(56.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
-                Text(
-                    text = "Back to Game",
-                    fontSize = 16.sp
+                ScaledTitleSmall(
+                    text = "Back to Game"
                 )
             }
         }
@@ -121,26 +120,26 @@ fun RulesScreen(onNavigateBack: () -> Unit) {
 
 @Composable
 fun RuleSection(title: String, description: String) {
+    val uiScale = rememberUiScaleUtils()
+    
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 24.dp)
+            .scaledPadding(bottom = 24.dp)
     ) {
-        Text(
+        ScaledTitleMedium(
             text = title,
-            fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
-                .padding(bottom = 8.dp)
+                .scaledPadding(bottom = 8.dp)
                 .semantics { heading() }
         )
         
-        Text(
+        ScaledBodyMedium(
             text = description,
-            fontSize = 16.sp,
             color = MaterialTheme.colorScheme.onSurface,
-            lineHeight = 24.sp
+            lineHeight = scaledSp(24f)
         )
     }
 }

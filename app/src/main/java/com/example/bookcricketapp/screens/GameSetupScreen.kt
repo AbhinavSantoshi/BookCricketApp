@@ -7,6 +7,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.bookcricketapp.components.ToggleGroup
+import com.example.bookcricketapp.utils.*
 import com.example.bookcricketapp.viewmodels.GameMode
 import com.example.bookcricketapp.viewmodels.GameViewModel
 
@@ -15,10 +16,12 @@ fun GameSetupScreen(
     gameViewModel: GameViewModel,
     onNavigateToToss: () -> Unit
 ) {
+    val uiScale = rememberUiScaleUtils()
+    
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .scaledPadding(16.dp)
     ) {
         // Game Mode Selection
         val gameModeTitles = listOf("Vs Computer", "Players vs Players")
@@ -27,13 +30,12 @@ fun GameSetupScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                .scaledPadding(vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
+            ScaledBodyLarge(
                 text = "Game Mode:",
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.width(110.dp)
+                modifier = Modifier.scaledWidth(110.dp)
             )
 
             ToggleGroup(
@@ -54,39 +56,42 @@ fun GameSetupScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
+                .scaledPadding(vertical = 8.dp)
         ) {
             // Team 1 name input
             OutlinedTextField(
                 value = gameViewModel.team1Name,
                 onValueChange = { gameViewModel.team1Name = it },
-                label = { Text("Team 1 Name") },
+                label = { ScaledBodyMedium(text = "Team 1 Name") },
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp)
+                    .scaledPadding(vertical = 4.dp)
             )
 
             // Team 2 name input
             OutlinedTextField(
                 value = gameViewModel.team2Name,
                 onValueChange = { gameViewModel.team2Name = it },
-                label = { Text("Team 2 Name") },
+                label = { ScaledBodyMedium(text = "Team 2 Name") },
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp),
+                    .scaledPadding(vertical = 4.dp),
                 enabled = gameViewModel.gameMode != GameMode.PVC // Disable when in PVC mode
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.scaledHeight(16.dp))
 
         Button(
             onClick = onNavigateToToss,
-            modifier = Modifier.align(Alignment.End)
+            modifier = Modifier
+                .align(Alignment.End)
+                .scaledHeight(48.dp)
+                .scaledPadding(horizontal = 16.dp)
         ) {
-            Text(text = "Start Game")
+            ScaledTitleSmall(text = "Start Game")
         }
     }
 }

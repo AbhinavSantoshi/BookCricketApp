@@ -19,8 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.bookcricketapp.ui.theme.ScoreboardStyle
+import com.example.bookcricketapp.utils.*
 import kotlinx.coroutines.delay
 
 @Composable
@@ -34,6 +34,8 @@ fun ScoreboardCard(
     modifier: Modifier = Modifier,
     isAnimated: Boolean = false
 ) {
+    val uiScale = rememberUiScaleUtils()
+    
     // Animation for score changes
     var scoreScale by remember { mutableStateOf(1f) }
     
@@ -66,8 +68,8 @@ fun ScoreboardCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .shadow(8.dp, RoundedCornerShape(16.dp)),
-        shape = RoundedCornerShape(16.dp),
+            .shadow(uiScale.scaledDp(8.dp), RoundedCornerShape(uiScale.scaledDp(16.dp))),
+        shape = RoundedCornerShape(uiScale.scaledDp(16.dp)),
         colors = CardDefaults.cardColors(
             containerColor = Color.Transparent // Use transparent to show gradient
         )
@@ -76,7 +78,7 @@ fun ScoreboardCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(cardGradient)
-                .padding(16.dp)
+                .scaledPadding(16.dp)
         ) {
             Column(
                 modifier = Modifier
@@ -84,19 +86,18 @@ fun ScoreboardCard(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // Team name with divider
-                Text(
+                ScaledTitleMedium(
                     text = teamName,
-                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
                 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.scaledHeight(8.dp))
                 
                 Divider(
                     color = MaterialTheme.colorScheme.outlineVariant,
-                    thickness = 1.dp,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    thickness = uiScale.scaledDp(1.dp),
+                    modifier = Modifier.scaledPadding(bottom = 16.dp)
                 )
                 
                 // Score display
@@ -104,28 +105,27 @@ fun ScoreboardCard(
                     verticalAlignment = Alignment.Bottom,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Text(
+                    ScaledText(
                         text = score.toString(),
                         style = ScoreboardStyle,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.scale(scoreScaleAnimated)
                     )
                     
-                    Text(
+                    ScaledText(
                         text = "/$wickets",
-                        fontSize = 24.sp,
+                        fontSize = scaledSp(24f),
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                        modifier = Modifier.padding(bottom = 3.dp, start = 4.dp)
+                        modifier = Modifier.scaledPadding(bottom = 3.dp, start = 4.dp)
                     )
                 }
                 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.scaledHeight(8.dp))
                 
                 // Overs info
-                Text(
+                ScaledBodyLarge(
                     text = "($overs)",
-                    style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
                 
@@ -136,19 +136,18 @@ fun ScoreboardCard(
                     exit = fadeOut()
                 ) {
                     if (infoText != null) {
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.scaledHeight(16.dp))
                         
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clip(RoundedCornerShape(8.dp))
+                                .clip(RoundedCornerShape(uiScale.scaledDp(8.dp)))
                                 .background(MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.7f))
-                                .padding(horizontal = 12.dp, vertical = 8.dp),
+                                .scaledPadding(horizontal = 12.dp, vertical = 8.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(
+                            ScaledBodyMedium(
                                 text = infoText,
-                                style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onTertiaryContainer,
                                 textAlign = TextAlign.Center
                             )
@@ -169,18 +168,17 @@ fun ScoreboardCard(
                     trackColor = MaterialTheme.colorScheme.surfaceVariant,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp, bottom = 8.dp)
-                        .height(6.dp)
-                        .clip(RoundedCornerShape(3.dp))
+                        .scaledPadding(top = 16.dp, bottom = 8.dp)
+                        .scaledHeight(6.dp)
+                        .clip(RoundedCornerShape(uiScale.scaledDp(3.dp)))
                 )
                 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
                 ) {
-                    Text(
+                    ScaledLabelMedium(
                         text = "Wickets: $wickets/$maxWickets",
-                        style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                     )
                 }
@@ -195,6 +193,8 @@ fun RunDisplay(
     isOut: Boolean = false,
     modifier: Modifier = Modifier
 ) {
+    val uiScale = rememberUiScaleUtils()
+    
     val backgroundColor = when {
         isOut -> MaterialTheme.colorScheme.errorContainer
         runs == 4 -> MaterialTheme.colorScheme.secondaryContainer
@@ -228,16 +228,16 @@ fun RunDisplay(
     
     Box(
         modifier = modifier
-            .size(64.dp)
-            .shadow(elevation = 4.dp, shape = RoundedCornerShape(32.dp))
-            .clip(RoundedCornerShape(32.dp))
+            .scaledSize(64.dp)
+            .shadow(elevation = uiScale.scaledDp(4.dp), shape = RoundedCornerShape(uiScale.scaledDp(32.dp)))
+            .clip(RoundedCornerShape(uiScale.scaledDp(32.dp)))
             .background(backgroundColor)
             .scale(pulseAnimation.value),
         contentAlignment = Alignment.Center
     ) {
-        Text(
+        ScaledText(
             text = if (isOut) "OUT" else runs?.toString() ?: "-",
-            fontSize = 22.sp,
+            fontSize = scaledSp(22f),
             fontWeight = FontWeight.ExtraBold,
             color = textColor
         )
