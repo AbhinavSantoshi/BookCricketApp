@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.bookcricketapp.utils.*
 import com.example.bookcricketapp.viewmodels.GameViewModel
 import kotlinx.coroutines.delay
 
@@ -34,6 +35,7 @@ fun GameResultScreen(
     gameViewModel.determineWinner()
     
     val scrollState = rememberScrollState()
+    val uiScale = rememberUiScaleUtils()
     
     // Animation states
     var showResultCard by remember { mutableStateOf(false) }
@@ -93,11 +95,11 @@ fun GameResultScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .scaledPadding(16.dp)
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.scaledHeight(32.dp))
             
             // Result Card
             AnimatedVisibility(
@@ -108,12 +110,12 @@ fun GameResultScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .scaledPadding(horizontal = 16.dp, vertical = 8.dp)
                         .shadow(
-                            elevation = 8.dp,
-                            shape = RoundedCornerShape(16.dp)
+                            elevation = uiScale.scaledDp(8.dp),
+                            shape = RoundedCornerShape(uiScale.scaledDp(16.dp))
                         ),
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RoundedCornerShape(uiScale.scaledDp(16.dp)),
                     colors = CardDefaults.cardColors(
                         containerColor = when {
                             gameViewModel.matchTied -> MaterialTheme.colorScheme.surfaceVariant
@@ -126,42 +128,42 @@ fun GameResultScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(24.dp),
+                            .scaledPadding(24.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
+                        ScaledText(
                             text = "MATCH RESULT",
-                            fontSize = 18.sp,
+                            fontSize = scaledSp(18f),
                             fontWeight = FontWeight.Medium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                         )
                         
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.scaledHeight(16.dp))
                         
-                        Text(
+                        ScaledText(
                             text = when {
                                 gameViewModel.matchTied -> "Match Tied!"
                                 else -> "${gameViewModel.matchWinner} Wins!"
                             },
-                            fontSize = 28.sp,
+                            fontSize = scaledSp(28f),
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
                         )
                         
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.scaledHeight(16.dp))
                         
-                        Text(
+                        ScaledText(
                             text = gameViewModel.getMatchResultDescription(),
-                            fontSize = 16.sp,
+                            fontSize = scaledSp(16f),
                             textAlign = TextAlign.Center,
-                            lineHeight = 24.sp,
+                            lineHeight = scaledSp(24f),
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
             }
             
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.scaledHeight(24.dp))
             
             // First Innings Summary
             AnimatedVisibility(
@@ -174,42 +176,41 @@ fun GameResultScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .clip(RoundedCornerShape(16.dp)),
+                        .scaledPadding(horizontal = 16.dp, vertical = 8.dp)
+                        .clip(RoundedCornerShape(uiScale.scaledDp(16.dp))),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface
                     ),
-                    elevation = CardDefaults.cardElevation(4.dp)
+                    elevation = CardDefaults.cardElevation(uiScale.scaledDp(4.dp))
                 ) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(20.dp)
+                            .scaledPadding(20.dp)
                     ) {
-                        Text(
+                        ScaledTitleMedium(
                             text = "First Innings: $firstInningsTeamName",
-                            fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(bottom = 12.dp)
+                            modifier = Modifier.scaledPadding(bottom = 12.dp)
                         )
                         
                         Divider(
-                            modifier = Modifier.padding(vertical = 8.dp),
+                            modifier = Modifier.scaledPadding(vertical = 8.dp),
                             color = MaterialTheme.colorScheme.outlineVariant
                         )
                         
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 8.dp),
+                                .scaledPadding(vertical = 8.dp),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(
+                            ScaledBodyMedium(
                                 text = "Score:",
                                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                             )
-                            Text(
+                            ScaledBodyMedium(
                                 text = "$firstInningsScore/$firstInningsWickets",
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -219,14 +220,14 @@ fun GameResultScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 4.dp),
+                                .scaledPadding(vertical = 4.dp),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(
+                            ScaledBodyMedium(
                                 text = "Overs:",
                                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                             )
-                            Text(
+                            ScaledBodyMedium(
                                 text = gameViewModel.getCurrentOver(firstInningsBalls),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -235,14 +236,14 @@ fun GameResultScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 4.dp),
+                                .scaledPadding(vertical = 4.dp),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(
+                            ScaledBodyMedium(
                                 text = "Run Rate:",
                                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                             )
-                            Text(
+                            ScaledBodyMedium(
                                 text = gameViewModel.getRunRate(firstInningsScore, firstInningsBalls),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -251,7 +252,7 @@ fun GameResultScreen(
                 }
             }
             
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.scaledHeight(16.dp))
             
             // Second Innings Summary
             AnimatedVisibility(
@@ -264,42 +265,41 @@ fun GameResultScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .clip(RoundedCornerShape(16.dp)),
+                        .scaledPadding(horizontal = 16.dp, vertical = 8.dp)
+                        .clip(RoundedCornerShape(uiScale.scaledDp(16.dp))),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface
                     ),
-                    elevation = CardDefaults.cardElevation(4.dp)
+                    elevation = CardDefaults.cardElevation(uiScale.scaledDp(4.dp))
                 ) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(20.dp)
+                            .scaledPadding(20.dp)
                     ) {
-                        Text(
+                        ScaledTitleMedium(
                             text = "Second Innings: $secondInningsTeamName",
-                            fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(bottom = 12.dp)
+                            modifier = Modifier.scaledPadding(bottom = 12.dp)
                         )
                         
                         Divider(
-                            modifier = Modifier.padding(vertical = 8.dp),
+                            modifier = Modifier.scaledPadding(vertical = 8.dp),
                             color = MaterialTheme.colorScheme.outlineVariant
                         )
                         
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 8.dp),
+                                .scaledPadding(vertical = 8.dp),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(
+                            ScaledBodyMedium(
                                 text = "Score:",
                                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                             )
-                            Text(
+                            ScaledBodyMedium(
                                 text = "$secondInningsScore/$secondInningsWickets",
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -309,14 +309,14 @@ fun GameResultScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 4.dp),
+                                .scaledPadding(vertical = 4.dp),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(
+                            ScaledBodyMedium(
                                 text = "Overs:",
                                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                             )
-                            Text(
+                            ScaledBodyMedium(
                                 text = gameViewModel.getCurrentOver(secondInningsBalls),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -325,14 +325,14 @@ fun GameResultScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 4.dp),
+                                .scaledPadding(vertical = 4.dp),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(
+                            ScaledBodyMedium(
                                 text = "Run Rate:",
                                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                             )
-                            Text(
+                            ScaledBodyMedium(
                                 text = gameViewModel.getRunRate(secondInningsScore, secondInningsBalls),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -341,7 +341,7 @@ fun GameResultScreen(
                 }
             }
             
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.scaledHeight(32.dp))
             
             // Buttons
             AnimatedVisibility(
@@ -354,47 +354,45 @@ fun GameResultScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
+                        .scaledPadding(horizontal = 16.dp)
                 ) {
                     Button(
                         onClick = onPlayAgain,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(56.dp),
+                            .scaledHeight(56.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary
                         ),
-                        shape = RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(uiScale.scaledDp(12.dp))
                     ) {
-                        Text(
+                        ScaledTitleMedium(
                             text = "Play Again",
-                            fontSize = 18.sp,
                             fontWeight = FontWeight.Medium
                         )
                     }
                     
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.scaledHeight(16.dp))
                     
                     OutlinedButton(
                         onClick = onBackToHome,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(56.dp),
-                        shape = RoundedCornerShape(12.dp),
+                            .scaledHeight(56.dp),
+                        shape = RoundedCornerShape(uiScale.scaledDp(12.dp)),
                         colors = ButtonDefaults.outlinedButtonColors(
                             contentColor = MaterialTheme.colorScheme.primary
                         )
                     ) {
-                        Text(
+                        ScaledTitleMedium(
                             text = "Back to Home",
-                            fontSize = 18.sp,
                             fontWeight = FontWeight.Medium
                         )
                     }
                 }
             }
             
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.scaledHeight(32.dp))
         }
     }
 }

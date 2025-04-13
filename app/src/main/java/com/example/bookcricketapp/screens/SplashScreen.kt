@@ -23,10 +23,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.bookcricketapp.R
+import com.example.bookcricketapp.utils.*
 import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(onNavigateToHome: () -> Unit) {
+    // Get UI scaling utilities
+    val uiScale = rememberUiScaleUtils()
+    
     // Animation states
     var showCricketBall by remember { mutableStateOf(false) }
     var showTitle by remember { mutableStateOf(false) }
@@ -110,14 +114,14 @@ fun SplashScreen(onNavigateToHome: () -> Unit) {
             // Cricket ball with animation
             Box(
                 modifier = Modifier
-                    .size(160.dp)
+                    .scaledSize(160.dp)
                     .graphicsLayer {
                         scaleX = ballScale.value
                         scaleY = ballScale.value
                         rotationY = ballRotation.value
                     }
                     .shadow(
-                        elevation = 8.dp,
+                        elevation = uiScale.scaledDp(8.dp),
                         shape = CircleShape,
                         spotColor = MaterialTheme.colorScheme.primary
                     )
@@ -129,7 +133,7 @@ fun SplashScreen(onNavigateToHome: () -> Unit) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(4.dp)
+                        .scaledPadding(4.dp)
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.tertiary)
                 ) {
@@ -137,8 +141,8 @@ fun SplashScreen(onNavigateToHome: () -> Unit) {
                     Box(
                         modifier = Modifier
                             .align(Alignment.Center)
-                            .width(100.dp)
-                            .height(8.dp)
+                            .scaledWidth(100.dp)
+                            .scaledHeight(8.dp)
                             .graphicsLayer {
                                 rotationZ = 30f
                             }
@@ -148,8 +152,8 @@ fun SplashScreen(onNavigateToHome: () -> Unit) {
                     Box(
                         modifier = Modifier
                             .align(Alignment.Center)
-                            .width(100.dp)
-                            .height(8.dp)
+                            .scaledWidth(100.dp)
+                            .scaledHeight(8.dp)
                             .graphicsLayer {
                                 rotationZ = -30f
                             }
@@ -158,10 +162,10 @@ fun SplashScreen(onNavigateToHome: () -> Unit) {
                 }
             }
             
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.scaledHeight(48.dp))
             
             // Title animation
-            Text(
+            ScaledText(
                 text = "BOOK CRICKET",
                 style = MaterialTheme.typography.displayMedium,
                 fontWeight = FontWeight.Bold,
@@ -175,10 +179,10 @@ fun SplashScreen(onNavigateToHome: () -> Unit) {
                     }
             )
             
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.scaledHeight(16.dp))
             
             // Tagline with fade-in animation
-            Text(
+            ScaledText(
                 text = "The Classic Game, Reimagined",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
@@ -188,13 +192,13 @@ fun SplashScreen(onNavigateToHome: () -> Unit) {
         }
         
         // Version text at bottom
-        Text(
+        ScaledText(
             text = "v1.0",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 16.dp)
+                .scaledPadding(bottom = 16.dp)
                 .alpha(taglineAlpha.value)
         )
     }

@@ -33,6 +33,7 @@ import com.example.bookcricketapp.R
 import com.example.bookcricketapp.components.ButtonType
 import com.example.bookcricketapp.components.CricketButton
 import com.example.bookcricketapp.components.CricketText
+import com.example.bookcricketapp.utils.*
 import com.example.bookcricketapp.viewmodels.GameViewModel
 import com.example.bookcricketapp.viewmodels.TossChoice
 import com.example.bookcricketapp.viewmodels.TossResult
@@ -62,7 +63,7 @@ fun CricketBatIcon(
     Image(
         painter = painterResource(id = R.drawable.cricket_bat),
         contentDescription = "Cricket Bat",
-        modifier = modifier.size(24.dp),
+        modifier = modifier.scaledSize(24.dp),
         contentScale = ContentScale.Fit
     )
 }
@@ -76,7 +77,7 @@ fun CricketBallIcon(
     Image(
         painter = painterResource(id = R.drawable.cricket_ball),
         contentDescription = "Cricket Ball",
-        modifier = modifier.size(20.dp),
+        modifier = modifier.scaledSize(20.dp),
         contentScale = ContentScale.Fit
     )
 }
@@ -87,6 +88,7 @@ fun TossScreen(
     onTossComplete: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val uiScale = rememberUiScaleUtils()
     
     // States for toss animation and result
     var tossInProgress by remember { mutableStateOf(false) }
@@ -332,7 +334,7 @@ fun TossScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp),
+                .scaledPadding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -342,13 +344,12 @@ fun TossScreen(
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
-                Text(
+                ScaledHeadlineSmall(
                     text = if (showResult) "Toss Result" else "Coin Toss",
-                    style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier.scaledPadding(bottom = 16.dp)
                 )
             }
             
@@ -361,32 +362,30 @@ fun TossScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 16.dp),
-                    shape = RoundedCornerShape(16.dp),
+                        .scaledPadding(vertical = 16.dp),
+                    shape = RoundedCornerShape(uiScale.scaledDp(16.dp)),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surfaceVariant
                     ),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    elevation = CardDefaults.cardElevation(defaultElevation = uiScale.scaledDp(2.dp))
                 ) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(20.dp),
+                            .scaledPadding(20.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
+                        ScaledBodyMedium(
                             text = "Choose heads or tails for the toss",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center
                         )
                         
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.scaledHeight(8.dp))
                         
-                        Text(
+                        ScaledBodyMedium(
                             text = "Winner of the toss will choose to bat or bowl",
-                            style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
                             textAlign = TextAlign.Center
                         )
@@ -394,20 +393,20 @@ fun TossScreen(
                 }
             }
             
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.scaledHeight(24.dp))
             
             // Enhanced coin animation area
             Box(
                 modifier = Modifier
-                    .size(200.dp)
-                    .padding(8.dp),
+                    .scaledSize(200.dp)
+                    .scaledPadding(8.dp),
                 contentAlignment = Alignment.Center
             ) {
                 // Coin shadow (separate from coin to create more realistic effect)
                 if (tossInProgress && coinElevation.value > 4f) {
                     Box(
                         modifier = Modifier
-                            .size(100.dp * (2f - coinElevation.value/30f))  // Shadow gets smaller as coin goes higher
+                            .scaledSize(100.dp * (2f - coinElevation.value/30f))  // Shadow gets smaller as coin goes higher
                             .clip(CircleShape)
                             .alpha(0.2f * (1f - coinElevation.value/30f))  // Shadow fades as coin goes higher
                             .background(Color.Black)
@@ -417,9 +416,9 @@ fun TossScreen(
                 // The flipping coin - enhanced 3D effect
                 Box(
                     modifier = Modifier
-                        .size(120.dp)
+                        .scaledSize(120.dp)
                         .shadow(
-                            elevation = coinElevation.value.dp,
+                            elevation = uiScale.scaledDp(coinElevation.value.dp),
                             shape = CircleShape,
                             clip = true,
                             spotColor = Color(0xFFD4AF37) // Gold spot color for better shine
@@ -433,7 +432,7 @@ fun TossScreen(
                         }
                         .clip(CircleShape)
                         .border(
-                            width = 4.dp,
+                            width = uiScale.scaledDp(4.dp),
                             brush = Brush.linearGradient(
                                 colors = listOf(
                                     Color(0xFFFFD700).copy(alpha = if (coinShine.value > 0.5f) 0.9f else 0.7f), // Brighter gold
@@ -494,9 +493,9 @@ fun TossScreen(
                             // Gold ring as part of the coin design - works in both light/dark
                             Box(
                                 modifier = Modifier
-                                    .size(90.dp)
+                                    .scaledSize(90.dp)
                                     .border(
-                                        width = 3.dp,
+                                        width = uiScale.scaledDp(3.dp),
                                         brush = Brush.linearGradient(
                                             colors = listOf(
                                                 Color(0xFFFFD700),  // Pure gold that works in any mode
@@ -509,9 +508,9 @@ fun TossScreen(
                                     )
                             )
                             
-                            Text(
+                            ScaledText(
                                 text = "H",
-                                fontSize = 48.sp,
+                                fontSize = scaledSp(48f),
                                 fontWeight = FontWeight.Black,
                                 color = MaterialTheme.colorScheme.onSurface, // Uses theme color for better contrast
                                 textAlign = TextAlign.Center
@@ -528,9 +527,9 @@ fun TossScreen(
                             // Gold ring as part of the coin design - works in both light/dark
                             Box(
                                 modifier = Modifier
-                                    .size(90.dp)
+                                    .scaledSize(90.dp)
                                     .border(
-                                        width = 3.dp,
+                                        width = uiScale.scaledDp(3.dp),
                                         brush = Brush.linearGradient(
                                             colors = listOf(
                                                 Color(0xFFFFD700),  // Pure gold that works in any mode
@@ -543,9 +542,9 @@ fun TossScreen(
                                     )
                             )
                             
-                            Text(
+                            ScaledText(
                                 text = "T",
-                                fontSize = 48.sp,
+                                fontSize = scaledSp(48f),
                                 fontWeight = FontWeight.Black,
                                 color = MaterialTheme.colorScheme.onSurface, // Uses theme color for better contrast
                                 textAlign = TextAlign.Center
@@ -573,7 +572,7 @@ fun TossScreen(
                 }
             }
             
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.scaledHeight(24.dp))
             
             // Coin choice buttons (Heads/Tails)
             AnimatedVisibility(
@@ -584,7 +583,7 @@ fun TossScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 16.dp),
+                        .scaledPadding(vertical = 16.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     // Heads button
@@ -595,7 +594,7 @@ fun TossScreen(
                         },
                         buttonType = ButtonType.PRIMARY,
                         modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(uiScale.scaledDp(12.dp))
                     ) {
                         CricketText(
                             text = "Heads",
@@ -603,7 +602,7 @@ fun TossScreen(
                         )
                     }
                     
-                    Spacer(modifier = Modifier.width(16.dp))
+                    Spacer(modifier = Modifier.scaledWidth(16.dp))
                     
                     // Tails button
                     CricketButton(
@@ -613,7 +612,7 @@ fun TossScreen(
                         },
                         buttonType = ButtonType.SECONDARY,
                         modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(uiScale.scaledDp(12.dp))
                     ) {
                         CricketText(
                             text = "Tails",
@@ -636,16 +635,16 @@ fun TossScreen(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 16.dp)
+                            .scaledPadding(vertical = 16.dp)
                             .graphicsLayer {
                                 scaleX = resultCardScale.value
                                 scaleY = resultCardScale.value
                             }
                             .shadow(
-                                elevation = resultCardElevation.value.dp,
-                                shape = RoundedCornerShape(16.dp)
+                                elevation = uiScale.scaledDp(resultCardElevation.value.dp),
+                                shape = RoundedCornerShape(uiScale.scaledDp(16.dp))
                             ),
-                        shape = RoundedCornerShape(16.dp),
+                        shape = RoundedCornerShape(uiScale.scaledDp(16.dp)),
                         colors = CardDefaults.cardColors(
                             containerColor = if (tossWon) 
                                 MaterialTheme.colorScheme.primaryContainer 
@@ -656,7 +655,7 @@ fun TossScreen(
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(24.dp),
+                                .scaledPadding(24.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             // Improved "It's Heads/Tails" display
@@ -673,14 +672,13 @@ fun TossScreen(
                                         MaterialTheme.colorScheme.onPrimaryContainer 
                                     else 
                                         MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                                    modifier = Modifier.size(24.dp)
+                                    modifier = Modifier.scaledSize(24.dp)
                                 )
                                 
-                                Spacer(modifier = Modifier.width(8.dp))
+                                Spacer(modifier = Modifier.scaledWidth(8.dp))
                                 
-                                Text(
+                                ScaledTitleLarge(
                                     text = "It's ${coinResult?.name?.lowercase()?.replaceFirstChar { it.uppercase() } ?: ""}!",
-                                    style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.ExtraBold,
                                     color = if (tossWon) 
                                         MaterialTheme.colorScheme.onPrimaryContainer 
@@ -688,7 +686,7 @@ fun TossScreen(
                                         MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 
-                                Spacer(modifier = Modifier.width(8.dp))
+                                Spacer(modifier = Modifier.scaledWidth(8.dp))
                                 
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_launcher_foreground),
@@ -697,26 +695,25 @@ fun TossScreen(
                                         MaterialTheme.colorScheme.onPrimaryContainer 
                                     else 
                                         MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                                    modifier = Modifier.size(24.dp)
+                                    modifier = Modifier.scaledSize(24.dp)
                                 )
                             }
                             
-                            Spacer(modifier = Modifier.height(12.dp))
+                            Spacer(modifier = Modifier.scaledHeight(12.dp))
                             
                             Divider(
                                 color = if (tossWon)
                                     MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.2f)
                                 else
                                     MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f),
-                                modifier = Modifier.padding(vertical = 8.dp)
+                                modifier = Modifier.scaledPadding(vertical = 8.dp)
                             )
                             
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.scaledHeight(8.dp))
                             
                             // Improved winner announcement with bigger text and animation
-                            Text(
+                            ScaledHeadlineSmall(
                                 text = if (tossWon) "You won the toss!" else "${gameViewModel.tossWinner} won the toss!",
-                                style = MaterialTheme.typography.headlineSmall,
                                 fontWeight = FontWeight.Bold,
                                 color = if (tossWon) 
                                     MaterialTheme.colorScheme.onPrimaryContainer 
@@ -727,7 +724,7 @@ fun TossScreen(
                             
                             // Only show batting/bowling choice message when a choice has been made
                             if (battingChoiceMade) {
-                                Spacer(modifier = Modifier.height(16.dp))
+                                Spacer(modifier = Modifier.scaledHeight(16.dp))
                                 
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
@@ -736,7 +733,7 @@ fun TossScreen(
                                     // Cricket bat/ball icon based on choice
                                     val chooseToBat = gameViewModel.battingFirst == gameViewModel.tossWinner
                                     Box(
-                                        modifier = Modifier.size(20.dp)
+                                        modifier = Modifier.scaledSize(20.dp)
                                     ) {
                                         if (chooseToBat) {
                                             CricketBatIcon(
@@ -755,7 +752,7 @@ fun TossScreen(
                                         }
                                     }
                                     
-                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Spacer(modifier = Modifier.scaledWidth(8.dp))
                                     
                                     // Clear message showing who won and what they chose
                                     val winner = gameViewModel.tossWinner
@@ -765,9 +762,8 @@ fun TossScreen(
                                         "$winner chose to bowl first"
                                     }
                                     
-                                    Text(
+                                    ScaledTitleMedium(
                                         text = choiceText,
-                                        style = MaterialTheme.typography.titleSmall,
                                         fontWeight = FontWeight.Medium,
                                         color = if (tossWon) 
                                             MaterialTheme.colorScheme.onPrimaryContainer 
@@ -790,31 +786,30 @@ fun TossScreen(
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 8.dp),
-                            shape = RoundedCornerShape(16.dp),
+                                .scaledPadding(vertical = 8.dp),
+                            shape = RoundedCornerShape(uiScale.scaledDp(16.dp)),
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.surface
                             ),
-                            elevation = CardDefaults.cardElevation(4.dp)
+                            elevation = CardDefaults.cardElevation(uiScale.scaledDp(4.dp))
                         ) {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.padding(16.dp)
+                                modifier = Modifier.scaledPadding(16.dp)
                             ) {
-                                Text(
+                                ScaledTitleMedium(
                                     text = "What would you like to do?",
-                                    style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.onSurface,
                                     textAlign = TextAlign.Center,
-                                    modifier = Modifier.padding(vertical = 8.dp)
+                                    modifier = Modifier.scaledPadding(vertical = 8.dp)
                                 )
                                 
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(vertical = 12.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                                        .scaledPadding(vertical = 12.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(uiScale.scaledDp(16.dp))
                                 ) {
                                     // Bat first button with icon
                                     CricketButton(
@@ -828,19 +823,19 @@ fun TossScreen(
                                         buttonType = ButtonType.PRIMARY,
                                         modifier = Modifier
                                             .weight(1f)
-                                            .shadow(elevation = 4.dp, shape = RoundedCornerShape(12.dp)),
-                                        shape = RoundedCornerShape(12.dp)
+                                            .shadow(elevation = uiScale.scaledDp(4.dp), shape = RoundedCornerShape(uiScale.scaledDp(12.dp))),
+                                        shape = RoundedCornerShape(uiScale.scaledDp(12.dp))
                                     ) {
                                         Row(
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.Center
                                         ) {
                                             CricketBatIcon(
-                                                modifier = Modifier.size(24.dp),
+                                                modifier = Modifier.scaledSize(24.dp),
                                                 color = MaterialTheme.colorScheme.onPrimary
                                             )
                                             
-                                            Spacer(modifier = Modifier.width(8.dp))
+                                            Spacer(modifier = Modifier.scaledWidth(8.dp))
                                             
                                             CricketText(
                                                 text = "Bat First",
@@ -861,19 +856,19 @@ fun TossScreen(
                                         buttonType = ButtonType.SECONDARY,
                                         modifier = Modifier
                                             .weight(1f)
-                                            .shadow(elevation = 4.dp, shape = RoundedCornerShape(12.dp)),
-                                        shape = RoundedCornerShape(12.dp)
+                                            .shadow(elevation = uiScale.scaledDp(4.dp), shape = RoundedCornerShape(uiScale.scaledDp(12.dp))),
+                                        shape = RoundedCornerShape(uiScale.scaledDp(12.dp))
                                     ) {
                                         Row(
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.Center
                                         ) {
                                             CricketBallIcon(
-                                                modifier = Modifier.size(20.dp),
+                                                modifier = Modifier.scaledSize(20.dp),
                                                 color = MaterialTheme.colorScheme.onSecondary
                                             )
                                             
-                                            Spacer(modifier = Modifier.width(8.dp))
+                                            Spacer(modifier = Modifier.scaledWidth(8.dp))
                                             
                                             CricketText(
                                                 text = "Bowl First",
@@ -896,31 +891,30 @@ fun TossScreen(
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 8.dp),
-                            shape = RoundedCornerShape(16.dp),
+                                .scaledPadding(vertical = 8.dp),
+                            shape = RoundedCornerShape(uiScale.scaledDp(16.dp)),
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.surface
                             ),
-                            elevation = CardDefaults.cardElevation(4.dp)
+                            elevation = CardDefaults.cardElevation(uiScale.scaledDp(4.dp))
                         ) {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.padding(16.dp)
+                                modifier = Modifier.scaledPadding(16.dp)
                             ) {
-                                Text(
+                                ScaledTitleMedium(
                                     text = "${gameViewModel.team2Name}'s choice",
-                                    style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.onSurface,
                                     textAlign = TextAlign.Center,
-                                    modifier = Modifier.padding(vertical = 8.dp)
+                                    modifier = Modifier.scaledPadding(vertical = 8.dp)
                                 )
                                 
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(vertical = 12.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                                        .scaledPadding(vertical = 12.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(uiScale.scaledDp(16.dp))
                                 ) {
                                     // Bat first button for player B
                                     CricketButton(
@@ -933,19 +927,19 @@ fun TossScreen(
                                         buttonType = ButtonType.PRIMARY,
                                         modifier = Modifier
                                             .weight(1f)
-                                            .shadow(elevation = 4.dp, shape = RoundedCornerShape(12.dp)),
-                                        shape = RoundedCornerShape(12.dp)
+                                            .shadow(elevation = uiScale.scaledDp(4.dp), shape = RoundedCornerShape(uiScale.scaledDp(12.dp))),
+                                        shape = RoundedCornerShape(uiScale.scaledDp(12.dp))
                                     ) {
                                         Row(
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.Center
                                         ) {
                                             CricketBatIcon(
-                                                modifier = Modifier.size(24.dp),
+                                                modifier = Modifier.scaledSize(24.dp),
                                                 color = MaterialTheme.colorScheme.onPrimary
                                             )
                                             
-                                            Spacer(modifier = Modifier.width(8.dp))
+                                            Spacer(modifier = Modifier.scaledWidth(8.dp))
                                             
                                             CricketText(
                                                 text = "Bat First",
@@ -965,19 +959,19 @@ fun TossScreen(
                                         buttonType = ButtonType.SECONDARY,
                                         modifier = Modifier
                                             .weight(1f)
-                                            .shadow(elevation = 4.dp, shape = RoundedCornerShape(12.dp)),
-                                        shape = RoundedCornerShape(12.dp)
+                                            .shadow(elevation = uiScale.scaledDp(4.dp), shape = RoundedCornerShape(uiScale.scaledDp(12.dp))),
+                                        shape = RoundedCornerShape(uiScale.scaledDp(12.dp))
                                     ) {
                                         Row(
                                             verticalAlignment = Alignment.CenterVertically,
                                             horizontalArrangement = Arrangement.Center
                                         ) {
                                             CricketBallIcon(
-                                                modifier = Modifier.size(20.dp),
+                                                modifier = Modifier.scaledSize(20.dp),
                                                 color = MaterialTheme.colorScheme.onSecondary
                                             )
                                             
-                                            Spacer(modifier = Modifier.width(8.dp))
+                                            Spacer(modifier = Modifier.scaledWidth(8.dp))
                                             
                                             CricketText(
                                                 text = "Bowl First",
@@ -990,7 +984,7 @@ fun TossScreen(
                         }
                     }
                     
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.scaledHeight(24.dp))
                     
                     // Show continue button only if the choice is made
                     AnimatedVisibility(
@@ -1004,13 +998,12 @@ fun TossScreen(
                             buttonType = ButtonType.PRIMARY,
                             modifier = Modifier
                                 .fillMaxWidth(0.7f)
-                                .height(56.dp),
-                            shape = RoundedCornerShape(12.dp)
+                                .scaledHeight(56.dp),
+                            shape = RoundedCornerShape(uiScale.scaledDp(12.dp))
                         ) {
-                            CricketText(
+                            ScaledTitleMedium(
                                 text = "Continue to Match",
-                                fontWeight = FontWeight.Bold,
-                                style = MaterialTheme.typography.titleMedium
+                                fontWeight = FontWeight.Bold
                             )
                         }
                     }
@@ -1042,7 +1035,7 @@ fun TossScreen(
                             drawRect(
                                 color = particle.color.copy(alpha = 1f - y / size.height),
                                 topLeft = Offset(x, y),
-                                size = androidx.compose.ui.geometry.Size(particle.size, particle.size)
+                                size = Size(particle.size, particle.size)
                             )
                             canvas.restore()
                         }

@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bookcricketapp.navigation.AppNavigation
 import com.example.bookcricketapp.ui.theme.BookCricketAppTheme
+import com.example.bookcricketapp.utils.ProvideUiScaleUtils
 import com.example.bookcricketapp.viewmodels.GameViewModel
 
 class MainActivity : ComponentActivity() {
@@ -18,21 +19,24 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             BookCricketAppTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    // Create the navigation controller
-                    val navController = rememberNavController()
-                    
-                    // Create the game view model
-                    val gameViewModel: GameViewModel = viewModel()
-                    
-                    // Set up navigation with both required parameters
-                    AppNavigation(
-                        navController = navController,
-                        gameViewModel = gameViewModel
-                    )
+                // Wrap the entire app content with our ProvideUiScaleUtils
+                ProvideUiScaleUtils {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        // Create the navigation controller
+                        val navController = rememberNavController()
+                        
+                        // Create the game view model
+                        val gameViewModel: GameViewModel = viewModel()
+                        
+                        // Set up navigation with both required parameters
+                        AppNavigation(
+                            navController = navController,
+                            gameViewModel = gameViewModel
+                        )
+                    }
                 }
             }
         }

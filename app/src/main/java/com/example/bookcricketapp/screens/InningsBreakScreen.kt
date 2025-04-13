@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.bookcricketapp.utils.*
 import com.example.bookcricketapp.viewmodels.GameViewModel
 import kotlinx.coroutines.delay
 
@@ -32,6 +33,7 @@ fun InningsBreakScreen(
 ) {
     val battingFirst = gameViewModel.battingFirst
     val bowlingFirst = gameViewModel.bowlingFirst
+    val uiScale = rememberUiScaleUtils()
     
     // Animation states
     var animationStarted by remember { mutableStateOf(false) }
@@ -53,9 +55,8 @@ fun InningsBreakScreen(
         topBar = {
             TopAppBar(
                 title = { 
-                    Text(
-                        text = "Innings Break",
-                        style = MaterialTheme.typography.titleMedium
+                    ScaledTitleMedium(
+                        text = "Innings Break"
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -75,7 +76,7 @@ fun InningsBreakScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .scaledPadding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -89,12 +90,11 @@ fun InningsBreakScreen(
                         )
                     )
                 ) {
-                    Text(
+                    ScaledHeadlineSmall(
                         text = "End of First Innings",
-                        style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(bottom = 24.dp)
+                        modifier = Modifier.scaledPadding(bottom = 24.dp)
                     )
                 }
                 
@@ -112,30 +112,29 @@ fun InningsBreakScreen(
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp)
-                            .shadow(8.dp, RoundedCornerShape(16.dp)),
-                        shape = RoundedCornerShape(16.dp),
+                            .scaledPadding(16.dp)
+                            .shadow(uiScale.scaledDp(8.dp), RoundedCornerShape(uiScale.scaledDp(16.dp))),
+                        shape = RoundedCornerShape(uiScale.scaledDp(16.dp)),
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.surface
                         ),
                         elevation = CardDefaults.cardElevation(
-                            defaultElevation = 4.dp
+                            defaultElevation = uiScale.scaledDp(4.dp)
                         )
                     ) {
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(24.dp),
+                                .scaledPadding(24.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(
+                            ScaledTitleLarge(
                                 text = "$battingFirst",
-                                style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                             
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.scaledHeight(16.dp))
                             
                             // Get the first innings score and wickets based on which team batted first
                             val firstInningsScore = if (battingFirst == gameViewModel.team1Name) {
@@ -158,42 +157,41 @@ fun InningsBreakScreen(
                             
                             Row(
                                 verticalAlignment = Alignment.Bottom,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                horizontalArrangement = Arrangement.spacedBy(uiScale.scaledDp(4.dp))
                             ) {
-                                Text(
+                                ScaledText(
                                     text = "$firstInningsScore",
                                     style = MaterialTheme.typography.displayMedium,
                                     fontWeight = FontWeight.ExtraBold,
                                     color = MaterialTheme.colorScheme.primary
                                 )
                                 
-                                Text(
+                                ScaledText(
                                     text = "/$firstInningsWickets",
                                     style = MaterialTheme.typography.headlineSmall,
                                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
-                                    modifier = Modifier.padding(bottom = 8.dp)
+                                    modifier = Modifier.scaledPadding(bottom = 8.dp)
                                 )
                             }
                             
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.scaledHeight(8.dp))
                             
-                            Text(
+                            ScaledTitleMedium(
                                 text = "Overs: ${gameViewModel.getCurrentOver(firstInningsBallsPlayed)}",
-                                style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             
-                            Spacer(modifier = Modifier.height(24.dp))
+                            Spacer(modifier = Modifier.scaledHeight(24.dp))
                             
                             // Target display with decorative line
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = 8.dp)
+                                    .scaledPadding(vertical = 8.dp)
                             ) {
                                 Divider(
                                     color = MaterialTheme.colorScheme.surfaceVariant,
-                                    thickness = 2.dp,
+                                    thickness = uiScale.scaledDp(2.dp),
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .align(Alignment.Center)
@@ -203,9 +201,9 @@ fun InningsBreakScreen(
                                     modifier = Modifier
                                         .align(Alignment.Center)
                                         .background(MaterialTheme.colorScheme.surface)
-                                        .padding(horizontal = 16.dp)
+                                        .scaledPadding(horizontal = 16.dp)
                                 ) {
-                                    Text(
+                                    ScaledText(
                                         text = "TARGET",
                                         style = MaterialTheme.typography.labelLarge,
                                         color = MaterialTheme.colorScheme.tertiary
@@ -213,17 +211,16 @@ fun InningsBreakScreen(
                                 }
                             }
                             
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.scaledHeight(16.dp))
                             
                             Box(
                                 modifier = Modifier
-                                    .clip(RoundedCornerShape(8.dp))
+                                    .clip(RoundedCornerShape(uiScale.scaledDp(8.dp)))
                                     .background(MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.7f))
-                                    .padding(horizontal = 24.dp, vertical = 12.dp)
+                                    .scaledPadding(horizontal = 24.dp, vertical = 12.dp)
                             ) {
-                                Text(
+                                ScaledTitleMedium(
                                     text = "$bowlingFirst needs ${firstInningsScore + 1} runs to win",
-                                    style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Medium,
                                     color = MaterialTheme.colorScheme.onTertiaryContainer,
                                     textAlign = TextAlign.Center
@@ -233,7 +230,7 @@ fun InningsBreakScreen(
                     }
                 }
                 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.scaledHeight(32.dp))
                 
                 // Ready text
                 AnimatedVisibility(
@@ -246,14 +243,13 @@ fun InningsBreakScreen(
                         )
                     )
                 ) {
-                    Text(
+                    ScaledBodyMedium(
                         text = "Ready for the second innings?",
-                        style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                     )
                 }
                 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.scaledHeight(24.dp))
                 
                 // Continue button with animation
                 AnimatedVisibility(
@@ -274,17 +270,16 @@ fun InningsBreakScreen(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 32.dp)
-                            .height(56.dp),
-                        shape = RoundedCornerShape(28.dp),
+                            .scaledPadding(horizontal = 32.dp)
+                            .scaledHeight(56.dp),
+                        shape = RoundedCornerShape(uiScale.scaledDp(28.dp)),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primaryContainer,
                             contentColor = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     ) {
-                        Text(
-                            text = "Start Second Innings",
-                            style = MaterialTheme.typography.titleMedium
+                        ScaledTitleMedium(
+                            text = "Start Second Innings"
                         )
                     }
                 }

@@ -33,6 +33,7 @@ import com.example.bookcricketapp.R
 import com.example.bookcricketapp.components.ButtonType
 import com.example.bookcricketapp.components.CricketButton
 import com.example.bookcricketapp.components.CricketText
+import com.example.bookcricketapp.utils.*
 import kotlinx.coroutines.launch
 
 @Composable
@@ -42,6 +43,7 @@ fun HomeScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val configuration = LocalConfiguration.current
+    val uiScale = rememberUiScaleUtils()
     
     // Button press animations - keeping these for user feedback
     val newGameButtonScale = remember { Animatable(1f) }
@@ -66,9 +68,9 @@ fun HomeScreen(
         // Decorative shapes for background
         Box(
             modifier = Modifier
-                .size(300.dp)
+                .scaledSize(300.dp)
                 .align(Alignment.TopCenter)
-                .offset(y = (-50).dp)
+                .offset(y = uiScale.scaledDp((-50).dp))
                 .alpha(0.08f)
                 .background(
                     MaterialTheme.colorScheme.primary,
@@ -79,7 +81,7 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 24.dp, vertical = 16.dp),
+                .scaledPadding(horizontal = 24.dp, vertical = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
@@ -88,13 +90,13 @@ fun HomeScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 24.dp)
+                    .scaledPadding(top = 24.dp)
             ) {
                 // App logo using the custom image
                 Box(
                     modifier = Modifier
-                        .size(160.dp)
-                        .shadow(12.dp, CircleShape)
+                        .scaledSize(160.dp)
+                        .shadow(uiScale.scaledDp(12.dp), CircleShape)
                         .clip(CircleShape)
                         .background(
                             brush = Brush.radialGradient(
@@ -111,33 +113,33 @@ fun HomeScreen(
                         contentDescription = "Book Cricket App Logo",
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(4.dp) // Add a small padding to create a border effect
+                            .scaledPadding(4.dp) // Add a small padding to create a border effect
                             .clip(CircleShape),
                         contentScale = ContentScale.Crop
                     )
                 }
                 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.scaledHeight(24.dp))
                 
                 // Main title with enhanced styling and overflow handling but no shadow/border
-                Text(
+                ScaledText(
                     text = "BOOK CRICKET",
-                    fontSize = 32.sp,
+                    fontSize = scaledSp(32f),
                     fontWeight = FontWeight.ExtraBold,
                     color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Center,
-                    letterSpacing = 1.5.sp,
+                    letterSpacing = scaledSp(1.5f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp)
+                        .scaledPadding(horizontal = 8.dp)
                 )
                 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.scaledHeight(12.dp))
                 
                 // Tagline with improved styling and overflow handling
-                Text(
+                ScaledText(
                     text = "The Classic Game, Now Digital!",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.secondary,
@@ -155,27 +157,27 @@ fun HomeScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .scaledPadding(horizontal = 16.dp, vertical = 8.dp)
                     .shadow(
-                        elevation = 16.dp,
-                        shape = RoundedCornerShape(24.dp),
+                        elevation = uiScale.scaledDp(16.dp),
+                        shape = RoundedCornerShape(uiScale.scaledDp(24.dp)),
                         spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
                         ambientColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.25f)
                     ),
-                shape = RoundedCornerShape(24.dp),
+                shape = RoundedCornerShape(uiScale.scaledDp(24.dp)),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f)
                 ),
                 elevation = CardDefaults.cardElevation(
-                    defaultElevation = 6.dp
+                    defaultElevation = uiScale.scaledDp(6.dp)
                 )
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 24.dp),
+                        .scaledPadding(horizontal = 24.dp, vertical = 24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(uiScale.scaledDp(16.dp))
                 ) {
                     // New Game button with simple press animation
                     Box(
@@ -202,22 +204,22 @@ fun HomeScreen(
                                 }
                             },
                             buttonType = ButtonType.PRIMARY,
-                            shape = RoundedCornerShape(16.dp),
-                            modifier = Modifier.height(56.dp)
+                            shape = RoundedCornerShape(uiScale.scaledDp(16.dp)),
+                            modifier = Modifier.scaledHeight(56.dp)
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                horizontalArrangement = Arrangement.spacedBy(uiScale.scaledDp(12.dp))
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.PlayArrow,
                                     contentDescription = null,
-                                    tint = Color.White
+                                    tint = Color.White,
+                                    modifier = Modifier.scaledSize(24.dp)
                                 )
                                 
-                                CricketText(
+                                ScaledTitleMedium(
                                     text = "New Game",
-                                    style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
@@ -249,22 +251,22 @@ fun HomeScreen(
                                 }
                             },
                             buttonType = ButtonType.SECONDARY,
-                            shape = RoundedCornerShape(16.dp),
-                            modifier = Modifier.height(56.dp)
+                            shape = RoundedCornerShape(uiScale.scaledDp(16.dp)),
+                            modifier = Modifier.scaledHeight(56.dp)
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                horizontalArrangement = Arrangement.spacedBy(uiScale.scaledDp(12.dp))
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Info,
                                     contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSecondary
+                                    tint = MaterialTheme.colorScheme.onSecondary,
+                                    modifier = Modifier.scaledSize(24.dp)
                                 )
                                 
-                                CricketText(
+                                ScaledTitleMedium(
                                     text = "How to Play",
-                                    style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
@@ -273,22 +275,22 @@ fun HomeScreen(
                 }
             }
             
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.scaledHeight(12.dp))
             
             // Footer with simple styling
             Column(
-                modifier = Modifier.padding(bottom = 8.dp),
+                modifier = Modifier.scaledPadding(bottom = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
+                ScaledText(
                     text = "v1.0",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                 )
                 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.scaledHeight(4.dp))
                 
-                Text(
+                ScaledText(
                     text = "© 2025 Santoshi Softwares",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)

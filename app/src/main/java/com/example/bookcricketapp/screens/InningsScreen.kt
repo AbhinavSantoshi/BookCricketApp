@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.bookcricketapp.utils.*
 import com.example.bookcricketapp.viewmodels.GameMode
 import com.example.bookcricketapp.viewmodels.GameViewModel
 import kotlinx.coroutines.delay
@@ -34,6 +35,7 @@ fun InningsScreen(
     val scrollState = rememberScrollState()
     val battingTeam = if (isFirstInnings) gameViewModel.battingFirst else gameViewModel.bowlingFirst
     val bowlingTeam = if (isFirstInnings) gameViewModel.bowlingFirst else gameViewModel.battingFirst
+    val uiScale = rememberUiScaleUtils()
 
     // Get the correct scores based on which team is batting, not assuming team1 bats first
     val currentScore = if (battingTeam == gameViewModel.team1Name) gameViewModel.team1Score else gameViewModel.team2Score
@@ -193,7 +195,7 @@ fun InningsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .scaledPadding(horizontal = 16.dp, vertical = 12.dp)
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -204,26 +206,25 @@ fun InningsScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 8.dp),
-                    shape = RoundedCornerShape(12.dp),
+                        .scaledPadding(bottom = 8.dp),
+                    shape = RoundedCornerShape(uiScale.scaledDp(12.dp)),
                     colors = CardDefaults.cardColors(
                         containerColor = if (isFirstInnings)
                             MaterialTheme.colorScheme.primaryContainer
                         else
                             MaterialTheme.colorScheme.secondaryContainer
                     ),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                    elevation = CardDefaults.cardElevation(defaultElevation = uiScale.scaledDp(4.dp))
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 8.dp),
+                            .scaledPadding(vertical = 8.dp),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
+                        ScaledHeadlineSmall(
                             text = "${if (isFirstInnings) "1st" else "2nd"} INNINGS",
-                            style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold,
                             color = if (isFirstInnings)
                                 MaterialTheme.colorScheme.onPrimaryContainer
@@ -237,17 +238,17 @@ fun InningsScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                shape = RoundedCornerShape(12.dp),
+                    .scaledPadding(bottom = 8.dp),
+                shape = RoundedCornerShape(uiScale.scaledDp(12.dp)),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                elevation = CardDefaults.cardElevation(defaultElevation = uiScale.scaledDp(2.dp))
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp),
+                        .scaledPadding(8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -259,19 +260,17 @@ fun InningsScreen(
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        Text(
+                        ScaledTitleMedium(
                             text = battingTeam,
-                            style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                     }
 
-                    Text(
+                    ScaledBodyMedium(
                         text = "vs",
-                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(horizontal = 8.dp)
+                        modifier = Modifier.scaledPadding(horizontal = 8.dp)
                     )
 
                     Column(
@@ -282,9 +281,8 @@ fun InningsScreen(
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        Text(
+                        ScaledTitleMedium(
                             text = bowlingTeam,
-                            style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
                         )
@@ -295,17 +293,17 @@ fun InningsScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                shape = RoundedCornerShape(16.dp),
+                    .scaledPadding(vertical = 4.dp),
+                shape = RoundedCornerShape(uiScale.scaledDp(16.dp)),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                elevation = CardDefaults.cardElevation(defaultElevation = uiScale.scaledDp(6.dp))
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(12.dp),
+                        .scaledPadding(12.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Row(
@@ -313,30 +311,30 @@ fun InningsScreen(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
+                        ScaledText(
                             text = "$currentScore",
-                            fontSize = 48.sp,
+                            fontSize = scaledSp(48f),
                             fontWeight = FontWeight.ExtraBold,
                             color = MaterialTheme.colorScheme.onSurface,
                             textAlign = TextAlign.Center
                         )
-                        Text(
+                        ScaledText(
                             text = " / ",
-                            fontSize = 36.sp,
+                            fontSize = scaledSp(36f),
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                             textAlign = TextAlign.Center
                         )
-                        Text(
+                        ScaledText(
                             text = "$currentWickets",
-                            fontSize = 36.sp,
+                            fontSize = scaledSp(36f),
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.error,
                             textAlign = TextAlign.Center
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.scaledHeight(12.dp))
 
                     Column(
                         modifier = Modifier.fillMaxWidth(),
@@ -348,24 +346,24 @@ fun InningsScreen(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
 
-                        Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(modifier = Modifier.scaledHeight(4.dp))
 
-                        Text(
+                        ScaledText(
                             text = "${currentBalls / 6}.${currentBalls % 6} / ${gameViewModel.totalOvers}.0",
-                            fontSize = 20.sp,
+                            fontSize = scaledSp(20f),
                             fontWeight = FontWeight.Medium,
                             textAlign = TextAlign.Center
                         )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.scaledHeight(8.dp))
 
                         val progress = currentBalls.toFloat() / (gameViewModel.totalOvers * 6)
                         LinearProgressIndicator(
                             progress = progress,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(8.dp)
-                                .clip(RoundedCornerShape(4.dp)),
+                                .scaledHeight(8.dp)
+                                .clip(RoundedCornerShape(uiScale.scaledDp(4.dp))),
                             color = if (isFirstInnings)
                                 MaterialTheme.colorScheme.primary
                             else
@@ -374,7 +372,7 @@ fun InningsScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.scaledHeight(16.dp))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -387,7 +385,7 @@ fun InningsScreen(
                             modifier = Modifier.weight(1f)
                         )
 
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.scaledWidth(8.dp))
 
                         if (isFirstInnings) {
                             StatCard(
@@ -414,7 +412,7 @@ fun InningsScreen(
                     }
 
                     if (!isFirstInnings) {
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.scaledHeight(8.dp))
 
                         // Determine first innings score based on batting order
                         val firstInningsScore = if (gameViewModel.battingFirst == gameViewModel.team1Name) {
@@ -429,8 +427,8 @@ fun InningsScreen(
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 6.dp),
-                            shape = RoundedCornerShape(12.dp),
+                                .scaledPadding(vertical = 6.dp),
+                            shape = RoundedCornerShape(uiScale.scaledDp(12.dp)),
                             colors = CardDefaults.cardColors(
                                 containerColor = if (remainingRuns <= remainingBalls / 2)
                                     MaterialTheme.colorScheme.primaryContainer
@@ -443,7 +441,7 @@ fun InningsScreen(
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(10.dp),
+                                    .scaledPadding(10.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Text(
@@ -452,20 +450,19 @@ fun InningsScreen(
                                     color = MaterialTheme.colorScheme.onSecondaryContainer
                                 )
 
-                                Spacer(modifier = Modifier.height(2.dp))
+                                Spacer(modifier = Modifier.scaledHeight(2.dp))
 
-                                Text(
+                                ScaledText(
                                     text = "$remainingRuns runs from $remainingBalls balls",
-                                    fontSize = 18.sp,
+                                    fontSize = scaledSp(18f),
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.onSecondaryContainer
                                 )
 
-                                Spacer(modifier = Modifier.height(2.dp))
+                                Spacer(modifier = Modifier.scaledHeight(2.dp))
 
-                                Text(
+                                ScaledBodyMedium(
                                     text = "Required rate: ${String.format("%.2f", remainingRuns.toFloat() * 6 / remainingBalls.coerceAtLeast(1))}",
-                                    style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
                                 )
                             }
@@ -474,8 +471,8 @@ fun InningsScreen(
                 }
             }
 
-            // Flexible space that shrinks on smaller screens
-            Spacer(modifier = Modifier.height(8.dp))
+            // Flexible space that adjusts with screen size
+            Spacer(modifier = Modifier.scaledHeight(8.dp))
 
             AnimatedVisibility(
                 visible = flipMessageVisible,
@@ -485,8 +482,8 @@ fun InningsScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    shape = RoundedCornerShape(12.dp),
+                        .scaledPadding(vertical = 8.dp),
+                    shape = RoundedCornerShape(uiScale.scaledDp(12.dp)),
                     colors = CardDefaults.cardColors(
                         containerColor = when {
                             flipMessage.contains("OUT") -> MaterialTheme.colorScheme.errorContainer
@@ -498,7 +495,7 @@ fun InningsScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(12.dp),
+                            .scaledPadding(12.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         val baseColor = when {
@@ -519,31 +516,30 @@ fun InningsScreen(
 
                         Box(
                             modifier = Modifier
-                                .size(50.dp)
+                                .scaledSize(50.dp)
                                 .background(
                                     color = baseColor.copy(alpha = 0.2f),
                                     shape = CircleShape
                                 )
                                 .border(
-                                    width = 2.dp,
+                                    width = uiScale.scaledDp(2.dp),
                                     color = baseColor.copy(alpha = 0.5f),
                                     shape = CircleShape
                                 ),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(
+                            ScaledText(
                                 text = runValue,
-                                fontSize = 24.sp,
+                                fontSize = scaledSp(24f),
                                 fontWeight = FontWeight.ExtraBold,
                                 color = baseColor
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.scaledHeight(8.dp))
 
-                        Text(
+                        ScaledTitleMedium(
                             text = flipMessage,
-                            style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = baseColor,
                             textAlign = TextAlign.Center
@@ -556,18 +552,18 @@ fun InningsScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(60.dp) // Reduced height from 60dp to 45dp
-                        .padding(vertical = 2.dp), // Reduced padding from 4dp to 2dp
+                        .scaledHeight(60.dp)
+                        .scaledPadding(vertical = 2.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Card(
                         modifier = Modifier
-                            .fillMaxWidth(0.7f) // Reduced width from 0.85f to 0.7f
+                            .fillMaxWidth(0.7f)
                             .shadow(
-                                elevation = 6.dp, // Reduced elevation from 8dp to 6dp
-                                shape = RoundedCornerShape(12.dp) // Reduced corner radius from 16dp to 12dp
+                                elevation = uiScale.scaledDp(6.dp),
+                                shape = RoundedCornerShape(uiScale.scaledDp(12.dp))
                             ),
-                        shape = RoundedCornerShape(12.dp), // Reduced corner radius from 16dp to 12dp
+                        shape = RoundedCornerShape(uiScale.scaledDp(12.dp)),
                         colors = CardDefaults.cardColors(
                             containerColor = when {
                                 isWicketFalling -> MaterialTheme.colorScheme.error
@@ -579,7 +575,7 @@ fun InningsScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 10.dp, horizontal = 12.dp), // Reduced padding from 16dp to smaller values
+                                .scaledPadding(vertical = 10.dp, horizontal = 12.dp),
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -590,9 +586,8 @@ fun InningsScreen(
                                 else -> ""
                             }
 
-                            Text(
+                            ScaledTitleLarge(
                                 text = animationText,
-                                style = MaterialTheme.typography.titleLarge, // Changed from headlineMedium to titleLarge for smaller text
                                 fontWeight = FontWeight.ExtraBold,
                                 color = Color.White,
                                 textAlign = TextAlign.Center
@@ -602,13 +597,13 @@ fun InningsScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.scaledHeight(8.dp))
 
             Button(
                 onClick = { if (!isInningsCompleted) handlePageFlip() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp), // Reduced button height
+                    .scaledHeight(50.dp),
                 enabled = !isInningsCompleted && 
                         (!gameViewModel.isComputerPlaying) &&
                         (!isWicketFalling) && 
@@ -630,28 +625,28 @@ fun InningsScreen(
                     disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                     disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
                 ),
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(uiScale.scaledDp(12.dp)),
                 elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 4.dp,
-                    pressedElevation = 8.dp,
+                    defaultElevation = uiScale.scaledDp(4.dp),
+                    pressedElevation = uiScale.scaledDp(8.dp),
                     disabledElevation = 0.dp
                 )
             ) {
-                Text(
+                ScaledTitleMedium(
                     text = if (isInningsCompleted) "Innings Complete" else "Flip Page",
-                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
             }
 
-            // Added small padding at the bottom to ensure the button isn't flush with screen edge
-            Spacer(modifier = Modifier.height(8.dp))
+            // Added bottom padding that scales with screen size
+            Spacer(modifier = Modifier.scaledHeight(8.dp))
         }
     }
 }
 
 @Composable
 fun ComputerBattingLoadingScreen(teamName: String) {
+    val uiScale = rememberUiScaleUtils()
     val infiniteTransition = rememberInfiniteTransition(label = "loading_transition")
     val scale by infiniteTransition.animateFloat(
         initialValue = 0.8f,
@@ -690,18 +685,17 @@ fun ComputerBattingLoadingScreen(teamName: String) {
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
+            ScaledHeadlineSmall(
                 text = "$teamName's Innings",
-                style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.scaledHeight(32.dp))
 
             Box(
                 modifier = Modifier
-                    .size(100.dp)
+                    .scaledSize(100.dp)
                     .graphicsLayer {
                         scaleX = scale
                         scaleY = scale
@@ -710,25 +704,23 @@ fun ComputerBattingLoadingScreen(teamName: String) {
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(100.dp),
+                    modifier = Modifier.scaledSize(100.dp),
                     color = MaterialTheme.colorScheme.primary,
-                    strokeWidth = 8.dp
+                    strokeWidth = uiScale.scaledDp(8.dp)
                 )
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.scaledHeight(32.dp))
 
-            Text(
+            ScaledTitleMedium(
                 text = "Computer is batting...",
-                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.scaledHeight(16.dp))
 
-            Text(
+            ScaledBodyMedium(
                 text = "Please wait",
-                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
             )
         }
@@ -742,10 +734,11 @@ private fun StatCard(
     backgroundColor: Color,
     modifier: Modifier = Modifier
 ) {
+    val uiScale = rememberUiScaleUtils()
     Card(
         modifier = modifier
-            .padding(4.dp),
-        shape = RoundedCornerShape(12.dp),
+            .scaledPadding(4.dp),
+        shape = RoundedCornerShape(uiScale.scaledDp(12.dp)),
         colors = CardDefaults.cardColors(
             containerColor = backgroundColor
         )
@@ -753,7 +746,7 @@ private fun StatCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 12.dp, horizontal = 8.dp),
+                .scaledPadding(vertical = 12.dp, horizontal = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -761,10 +754,10 @@ private fun StatCard(
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
+            Spacer(modifier = Modifier.scaledHeight(4.dp))
+            ScaledText(
                 text = value,
-                fontSize = 18.sp,
+                fontSize = scaledSp(18f),
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
             )
