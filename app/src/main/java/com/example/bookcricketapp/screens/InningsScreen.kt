@@ -556,30 +556,30 @@ fun InningsScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(80.dp) // Reduced height
-                        .padding(vertical = 4.dp), // Reduced padding
+                        .height(60.dp) // Reduced height from 60dp to 45dp
+                        .padding(vertical = 2.dp), // Reduced padding from 4dp to 2dp
                     contentAlignment = Alignment.Center
                 ) {
                     Card(
                         modifier = Modifier
-                            .fillMaxWidth(0.85f)
+                            .fillMaxWidth(0.7f) // Reduced width from 0.85f to 0.7f
                             .shadow(
-                                elevation = 8.dp,
-                                shape = RoundedCornerShape(16.dp)
+                                elevation = 6.dp, // Reduced elevation from 8dp to 6dp
+                                shape = RoundedCornerShape(12.dp) // Reduced corner radius from 16dp to 12dp
                             ),
-                        shape = RoundedCornerShape(16.dp),
+                        shape = RoundedCornerShape(12.dp), // Reduced corner radius from 16dp to 12dp
                         colors = CardDefaults.cardColors(
                             containerColor = when {
                                 isWicketFalling -> MaterialTheme.colorScheme.error
-                                currentRunAnimation == "four" -> MaterialTheme.colorScheme.tertiary // Changed from primary to tertiary (BoundaryOrange)
-                                else -> MaterialTheme.colorScheme.tertiary
+                                currentRunAnimation == "four" -> MaterialTheme.colorScheme.tertiary
+                                else -> MaterialTheme.colorScheme.secondary
                             }
                         )
                     ) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 16.dp, horizontal = 16.dp), // Reduced padding
+                                .padding(vertical = 10.dp, horizontal = 12.dp), // Reduced padding from 16dp to smaller values
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -592,7 +592,7 @@ fun InningsScreen(
 
                             Text(
                                 text = animationText,
-                                style = MaterialTheme.typography.headlineMedium, // Reduced text size
+                                style = MaterialTheme.typography.titleLarge, // Changed from headlineMedium to titleLarge for smaller text
                                 fontWeight = FontWeight.ExtraBold,
                                 color = Color.White,
                                 textAlign = TextAlign.Center

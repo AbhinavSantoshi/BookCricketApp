@@ -59,46 +59,12 @@ fun CricketBatIcon(
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.onPrimary
 ) {
-    Canvas(modifier = modifier.size(24.dp)) {
-        // Handle (grip) of the bat
-        drawRect(
-            color = Color(0xFF8B4513), // Brown wooden handle
-            topLeft = Offset(size.width * 0.4f, 0f),
-            size = Size(size.width * 0.2f, size.height * 0.4f)
-        )
-        
-        // Bat blade with light wood color and grip binding at top
-        drawRoundRect(
-            color = Color(0xFFE3C9A0), // Light wood color for blade
-            topLeft = Offset(0f, size.height * 0.37f),
-            size = Size(size.width, size.height * 0.63f),
-            cornerRadius = CornerRadius(size.width * 0.1f, size.width * 0.1f)
-        )
-        
-        // Grip binding detail
-        for (i in 0..2) {
-            drawLine(
-                color = Color.Black.copy(alpha = 0.7f),
-                start = Offset(size.width * 0.4f, size.height * 0.1f + i * 5),
-                end = Offset(size.width * 0.6f, size.height * 0.1f + i * 5),
-                strokeWidth = 1.5f
-            )
-        }
-        
-        // Bat edge detail
-        drawLine(
-            color = Color.Black.copy(alpha = 0.3f),
-            start = Offset(size.width * 0.1f, size.height * 0.5f),
-            end = Offset(size.width * 0.1f, size.height * 0.9f),
-            strokeWidth = 1f
-        )
-        drawLine(
-            color = Color.Black.copy(alpha = 0.3f),
-            start = Offset(size.width * 0.9f, size.height * 0.5f),
-            end = Offset(size.width * 0.9f, size.height * 0.9f),
-            strokeWidth = 1f
-        )
-    }
+    Image(
+        painter = painterResource(id = R.drawable.cricket_bat),
+        contentDescription = "Cricket Bat",
+        modifier = modifier.size(24.dp),
+        contentScale = ContentScale.Fit
+    )
 }
 
 // Custom cricket ball icon composable
@@ -107,55 +73,12 @@ fun CricketBallIcon(
     modifier: Modifier = Modifier,
     color: Color = Color(0xFFAA0000) // Cricket ball red
 ) {
-    Canvas(modifier = modifier.size(20.dp)) {
-        // Main ball shape
-        drawCircle(
-            brush = Brush.radialGradient(
-                colors = listOf(
-                    color,
-                    color.copy(alpha = 0.7f)
-                )
-            ),
-            radius = size.width / 2
-        )
-        
-        // Seam details
-        drawArc(
-            color = Color.White,
-            startAngle = 0f,
-            sweepAngle = 360f,
-            useCenter = false,
-            style = Stroke(width = size.width * 0.05f),
-            size = Size(size.width * 0.8f, size.height * 0.8f),
-            topLeft = Offset(size.width * 0.1f, size.height * 0.1f)
-        )
-        
-        // Cross seam details
-        rotate(degrees = 30f) {
-            drawLine(
-                color = Color.White,
-                start = Offset(size.width / 2, size.height * 0.2f),
-                end = Offset(size.width / 2, size.height * 0.8f),
-                strokeWidth = size.width * 0.05f
-            )
-        }
-        
-        rotate(degrees = 120f) {
-            drawLine(
-                color = Color.White,
-                start = Offset(size.width / 2, size.height * 0.2f),
-                end = Offset(size.width / 2, size.height * 0.8f),
-                strokeWidth = size.width * 0.05f
-            )
-        }
-        
-        // Highlight for 3D effect
-        drawCircle(
-            color = Color.White.copy(alpha = 0.3f),
-            radius = size.width * 0.2f,
-            center = Offset(size.width * 0.35f, size.height * 0.35f)
-        )
-    }
+    Image(
+        painter = painterResource(id = R.drawable.cricket_ball),
+        contentDescription = "Cricket Ball",
+        modifier = modifier.size(20.dp),
+        contentScale = ContentScale.Fit
+    )
 }
 
 @Composable
