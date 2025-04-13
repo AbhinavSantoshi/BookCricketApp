@@ -9,9 +9,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.example.bookcricketapp.utils.*
 
 @Composable
 fun ExitConfirmationDialog(
@@ -19,6 +19,8 @@ fun ExitConfirmationDialog(
     onExitClick: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
+    val uiScale = rememberUiScaleUtils()
+    
     Dialog(
         onDismissRequest = onDismissRequest,
         properties = DialogProperties(dismissOnClickOutside = true)
@@ -26,43 +28,41 @@ fun ExitConfirmationDialog(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            shape = RoundedCornerShape(16.dp),
+                .scaledPadding(16.dp),
+            shape = RoundedCornerShape(uiScale.scaledDp(16.dp)),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface
             ),
             elevation = CardDefaults.cardElevation(
-                defaultElevation = 8.dp
+                defaultElevation = uiScale.scaledDp(8.dp)
             )
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(24.dp),
+                    .scaledPadding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(
+                ScaledHeadlineSmall(
                     text = "Exit Game?",
-                    style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.scaledHeight(16.dp))
                 
-                Text(
+                ScaledBodyLarge(
                     text = "Do you want to exit the current game? Your progress will be lost.",
-                    style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.scaledHeight(24.dp))
                 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(uiScale.scaledDp(8.dp))
                 ) {
                     // Continue game button
                     CricketButton(
@@ -76,7 +76,7 @@ fun ExitConfirmationDialog(
                         )
                     }
                     
-                    // Exit button
+                    // Exit button - give more weight to ensure full text fits
                     CricketButton(
                         onClick = onExitClick,
                         buttonType = ButtonType.PRIMARY,
