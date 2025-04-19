@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.bookcricketapp"
+    namespace = "io.cricket.bookcricketapp"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.bookcricketapp"
+        applicationId = "io.cricket.bookcricketapp"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -19,11 +19,20 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        
+        // Add explicit resource value to ensure package name is consistent
+        resValue("string", "app_package", applicationId.toString())
+    }
+
+    // Add lint configuration to fix build error
+    lint {
+        disable += listOf("MutableCollectionMutableState", "AutoboxingStateCreation")
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

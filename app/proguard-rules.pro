@@ -12,10 +12,18 @@
 #   public *;
 #}
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Preserve the line number information for debugging stack traces.
+-keepattributes SourceFile,LineNumberTable
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Hide the original source file name.
+-renamesourcefileattribute SourceFile
+
+# Rules for Jetpack Compose
+-keep class androidx.compose.** { *; }
+-dontwarn androidx.compose.**
+
+# Keep Kotlin metadata for proper reflection
+-keepattributes *Annotation*, InnerClasses, Signature, RuntimeVisibleAnnotations, AnnotationDefault
+
+# Keep all of your app's model classes
+-keep class io.cricket.bookcricketapp.** { *; }
