@@ -154,7 +154,7 @@ fun InningsScreen(
                 // Only perform haptic feedback if enabled in settings
                 if (gameViewModel.isHapticFeedbackEnabled) {
                     try {
-                        hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                     } catch (e: Exception) {
                         // Safely handle any exceptions from haptic feedback
                     }

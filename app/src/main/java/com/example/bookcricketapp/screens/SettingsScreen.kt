@@ -122,10 +122,12 @@ fun SettingsScreen(
                             checked = gameViewModel.isHapticFeedbackEnabled,
                             onCheckedChange = { gameViewModel.isHapticFeedbackEnabled = it },
                             colors = SwitchDefaults.colors(
+                                // Enhanced contrast for checked state
                                 checkedThumbColor = MaterialTheme.colorScheme.primary,
-                                checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
-                                uncheckedThumbColor = MaterialTheme.colorScheme.outline,
-                                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant
+                                checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                                // Enhanced contrast for unchecked state
+                                uncheckedThumbColor = MaterialTheme.colorScheme.surface,
+                                uncheckedTrackColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                             )
                         )
                     }
