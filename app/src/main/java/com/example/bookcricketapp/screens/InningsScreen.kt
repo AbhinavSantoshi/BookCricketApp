@@ -618,11 +618,40 @@ fun InningsScreen(
 
             Spacer(modifier = Modifier.scaledHeight(8.dp))
 
+            // Add pulsing animation for the button
+            val infiniteButtonTransition = rememberInfiniteTransition(label = "button_pulse")
+            val buttonScale by infiniteButtonTransition.animateFloat(
+                initialValue = 1f,
+                targetValue = 1.05f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(1000, easing = EaseInOutQuart),
+                    repeatMode = RepeatMode.Reverse
+                ),
+                label = "button_pulse"
+            )
+            
+            // Only apply animation when button is enabled
+            val buttonScaleModifier = if (!isInningsCompleted && 
+                                         !gameViewModel.isComputerPlaying &&
+                                         !isWicketFalling && 
+                                         !isAnimatingRun && 
+                                         !isComputerInningsComplete &&
+                                         currentBalls < (gameViewModel.totalOvers * 6) &&
+                                         currentWickets < gameViewModel.wicketsPerTeam) {
+                Modifier.graphicsLayer {
+                    scaleX = buttonScale
+                    scaleY = buttonScale
+                }
+            } else {
+                Modifier
+            }
+
             Button(
                 onClick = { if (!isInningsCompleted) handlePageFlip() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .scaledHeight(50.dp),
+                    .scaledHeight(50.dp)
+                    .then(buttonScaleModifier),
                 enabled = !isInningsCompleted && 
                         (!gameViewModel.isComputerPlaying) &&
                         (!isWicketFalling) && 
@@ -636,19 +665,21 @@ fun InningsScreen(
                     containerColor = if (isInningsCompleted)
                         MaterialTheme.colorScheme.surfaceVariant
                     else
-                        MaterialTheme.colorScheme.primary,
+                        // Use a more vibrant color for better visibility
+                        Color(0xFF0D47A1), // Deep vibrant blue that stands out
                     contentColor = if (isInningsCompleted)
                         MaterialTheme.colorScheme.onSurfaceVariant
                     else
-                        MaterialTheme.colorScheme.onPrimary,
-                    disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                        Color.White, // Pure white for maximum contrast with the blue
+                    // Use the same blue color but with low alpha for disabled state for consistency
+                    disabledContainerColor = Color(0xFF0D47A1).copy(alpha = 0.38f),
+                    disabledContentColor = Color.White.copy(alpha = 0.38f)
                 ),
                 shape = RoundedCornerShape(uiScale.scaledDp(12.dp)),
                 elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = uiScale.scaledDp(4.dp),
-                    pressedElevation = uiScale.scaledDp(8.dp),
-                    disabledElevation = 0.dp
+                    defaultElevation = uiScale.scaledDp(6.dp), // Slightly increased elevation
+                    pressedElevation = uiScale.scaledDp(10.dp), // Enhanced pressed elevation
+                    disabledElevation = 0.dp // No elevation for disabled state to fix shadow issues in light mode
                 )
             ) {
                 ScaledTitleMedium(
