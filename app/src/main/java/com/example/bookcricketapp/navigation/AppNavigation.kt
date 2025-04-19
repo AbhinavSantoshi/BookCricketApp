@@ -13,6 +13,7 @@ import com.example.bookcricketapp.viewmodels.GameViewModel
 sealed class Screen(val route: String) {
     object Home : Screen("home")
     object About : Screen("about")
+    object Settings : Screen("settings") // Add Settings route
     object MatchSettings : Screen("match_settings")
     object Toss : Screen("toss")
     object FirstInnings : Screen("first_innings")
@@ -34,13 +35,23 @@ fun AppNavigation(
         composable(route = Screen.Home.route) {
             HomeScreen(
                 onNewGameClick = { navController.navigate(Screen.MatchSettings.route) },
-                onAboutClick = { navController.navigate(Screen.About.route) }
+                onAboutClick = { navController.navigate(Screen.About.route) },
+                onSettingsClick = { navController.navigate(Screen.Settings.route) },
+                gameViewModel = gameViewModel
             )
         }
         
         // About Screen
         composable(route = Screen.About.route) {
             RulesScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+        
+        // Settings Screen
+        composable(route = Screen.Settings.route) {
+            SettingsScreen(
+                gameViewModel = gameViewModel,
                 onNavigateBack = { navController.popBackStack() }
             )
         }

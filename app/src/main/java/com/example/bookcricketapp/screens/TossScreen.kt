@@ -29,6 +29,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import com.example.bookcricketapp.R
 import com.example.bookcricketapp.components.ButtonType
 import com.example.bookcricketapp.components.CricketButton
@@ -89,6 +91,7 @@ fun TossScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val uiScale = rememberUiScaleUtils()
+    val hapticFeedback = LocalHapticFeedback.current
     
     // States for toss animation and result
     var tossInProgress by remember { mutableStateOf(false) }
@@ -286,6 +289,13 @@ fun TossScreen(
                 
             // Finish animation
             coinFlipAnimationFinished = true
+            if (gameViewModel.isHapticFeedbackEnabled) {
+                try {
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                } catch (e: Exception) {
+                    // Safely handle any exceptions from haptic feedback
+                }
+            }
             delay(500)
             showResult = true
                 

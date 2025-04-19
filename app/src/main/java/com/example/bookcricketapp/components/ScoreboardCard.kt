@@ -16,6 +16,8 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -191,9 +193,11 @@ fun ScoreboardCard(
 fun RunDisplay(
     runs: Int?,
     isOut: Boolean = false,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    gameViewModel: com.example.bookcricketapp.viewmodels.GameViewModel
 ) {
     val uiScale = rememberUiScaleUtils()
+    val hapticFeedback = LocalHapticFeedback.current
     
     val backgroundColor = when {
         isOut -> MaterialTheme.colorScheme.errorContainer
@@ -214,6 +218,15 @@ fun RunDisplay(
     
     LaunchedEffect(runs, isOut) {
         if (runs == 4 || runs == 6 || isOut) {
+            // Only perform haptic feedback if enabled in settings
+            if (gameViewModel.isHapticFeedbackEnabled) {
+                try {
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                } catch (e: Exception) {
+                    // Safely handle any exceptions from haptic feedback
+                    // This prevents crashes if haptic feedback fails
+                }
+            }
             pulseAnimation.animateTo(
                 targetValue = 1.2f,
                 animationSpec = repeatable(

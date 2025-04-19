@@ -291,7 +291,7 @@ fun MatchSettingsScreen(
                             
                             // Team 2 name field
                             OutlinedTextField(
-                                value = if (gameMode == GameMode.PVC) "Computer" else team2Name,
+                                value = team2Name,
                                 onValueChange = { team2Name = it },
                                 label = { 
                                     Text(

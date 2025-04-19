@@ -15,6 +15,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -36,6 +38,7 @@ fun InningsScreen(
     val battingTeam = if (isFirstInnings) gameViewModel.battingFirst else gameViewModel.bowlingFirst
     val bowlingTeam = if (isFirstInnings) gameViewModel.bowlingFirst else gameViewModel.battingFirst
     val uiScale = rememberUiScaleUtils()
+    val hapticFeedback = LocalHapticFeedback.current
 
     // Get the correct scores based on which team is batting, not assuming team1 bats first
     val currentScore = if (battingTeam == gameViewModel.team1Name) gameViewModel.team1Score else gameViewModel.team2Score
@@ -132,6 +135,14 @@ fun InningsScreen(
         when (runType) {
             GameViewModel.RunType.OUT -> {
                 isWicketFalling = true
+                // Only perform haptic feedback if enabled in settings
+                if (gameViewModel.isHapticFeedbackEnabled) {
+                    try {
+                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                    } catch (e: Exception) {
+                        // Safely handle any exceptions from haptic feedback
+                    }
+                }
                 scope.launch {
                     delay(2000)
                     isWicketFalling = false
@@ -140,6 +151,14 @@ fun InningsScreen(
             GameViewModel.RunType.BOUNDARY -> {
                 isAnimatingRun = true
                 currentRunAnimation = if (runs == 4) "four" else "six"
+                // Only perform haptic feedback if enabled in settings
+                if (gameViewModel.isHapticFeedbackEnabled) {
+                    try {
+                        hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    } catch (e: Exception) {
+                        // Safely handle any exceptions from haptic feedback
+                    }
+                }
                 scope.launch {
                     delay(1500)
                     isAnimatingRun = false

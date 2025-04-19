@@ -48,6 +48,9 @@ class GameViewModel : ViewModel() {
     var bowlingFirst by mutableStateOf("")
     var currentBattingTeam by mutableStateOf("")
     var currentBowlingTeam by mutableStateOf("")
+    
+    // User preference for haptic feedback
+    var isHapticFeedbackEnabled by mutableStateOf(true)
 
     // Game Configuration
     var totalOvers by mutableStateOf(2)
@@ -94,7 +97,7 @@ class GameViewModel : ViewModel() {
         // Update team names based on selected game mode
         if (mode == GameMode.PVC) {
             team1Name = "Player A".trim()
-            team2Name = "Computer".trim()
+            team2Name = "Thala Bot".trim()
         } else {
             team1Name = "Player A".trim()
             team2Name = "Player B".trim()
